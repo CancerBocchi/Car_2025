@@ -1,0 +1,52 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "libraries/zf_components",
+                "libraries/zf_device",
+                "libraries/zf_driver",
+                "project/code/inc",
+                "libraries/zf_common",
+                "libraries/sdk/deceive",
+                "libraries/sdk/CMSIS/Include",
+                "libraries/sdk/board",
+                "libraries/sdk/CMSIS/Driver/Include",
+                "libraries/sdk/drives",
+                "libraries/sdk/xip",
+                "libraries/sdk/utilities",
+                "libraries/sdk/utilities/debug_console",
+                "libraries/sdk/utilities/str",
+                "libraries/sdk/components/serial_manager",
+                "libraries/sdk/components/osa",
+                "libraries/sdk/components/lists",
+                "libraries/sdk/cmsis_drivers",
+                "project/user/inc",
+                "project/code/inc"
+            ],
+            "defines": [
+                "CPU_MIMXRT1064DVL6A",
+                "SKIP_SYSCLK_INIT",
+                "XIP_EXTERNAL_FLASH=1",
+                "XIP_BOOT_HEADER_DCD_ENABLE=1",
+                "XIP_BOOT_HEADER_ENABLE=1",
+                "PRINTF_FLOAT_ENABLE=1",
+                "SCANF_FLOAT_ENABLE=1",
+                "PRINTF_ADVANCED_ENABLE=1",
+                "SCANF_ADVANCED_ENABLE=1",
+                "FSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ=0",
+                "USB_STACK_BM",
+                "DEBUG",
+                "MCUXPRESSO_SDK",
+                "SD_ENABLED"
+            ],
+            "windowsSdkVersion": "10.0.22621.0",
+            "compilerPath": "cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64"
+        }
+    ],
+    "version": 4
+}

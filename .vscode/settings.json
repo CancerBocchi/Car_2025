@@ -1,0 +1,33 @@
+{
+    "files.associations": {
+        "motor.h": "c",
+        "zf_common_headfile.h": "c",
+        "encoder.h": "c",
+        "zf_driver_gpio.h": "c",
+        "fsl_iomuxc.h": "c",
+        "pid.h": "c",
+        "zf_driver_timer.h": "c",
+        "zf_common_clock.h": "c",
+        "fsl_pwm.h": "c",
+        "zf_common_debug.h": "c",
+        "zf_driver_pwm.h": "c",
+        "buzzer.h": "c",
+        "rtthread.h": "c",
+        "rtconfig.h": "c",
+        "system_perform.h": "c",
+        "cross_handle.h": "c",
+        "final.h": "c",
+        "classify.h": "c",
+        "art.h": "c",
+        "circule_handle.h": "c",
+        "locate_picture.h": "c",
+        "my_vision.h": "c",
+        "side_catch.h": "c",
+        "mcxvision.h": "c",
+        "step_motor.h": "c",
+        "camera.h": "c",
+        "trace_line.h": "c",
+        "car.h": "c"
+    },
+    "C_Cpp.default.compilerPath": "cl.exe"
+}
