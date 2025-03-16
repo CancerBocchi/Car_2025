@@ -148,6 +148,7 @@
 #include "art.h"
 #include "final.h"
 #include "cross_handle.h"
+#include "button.h"
 //===================================================用户自定义文件===================================================
 
 extern int Start_Flag;

@@ -30,7 +30,8 @@ int main()
 	rt_kprintf("\nSystem_Init:\n");
 
 	rt_kprintf("----------  Basic Hardware Init ----------\n");
-	//car_motion_Init();
+	//
+	car_motion_Init();
 	buzzer_init();
 	Camera_and_Screen_Init();
 	
@@ -39,7 +40,18 @@ int main()
 
 	rt_kprintf("--------- init end ----------\n");
 
+	gpio_init(D16,GPI,0,GPI_PULL_UP);
+	gpio_init(D17,GPI,0,GPI_PULL_UP);
+
+	rt_thread_delay(1000);
+
 	while(1){
+		if(!gpio_get_level(D16)){
+			Car_Start();
+			rt_thread_delay(2000);
+			speed_forward = 400;
+			// Car_Change_Speed(0,200,0);
+		}
 		rt_thread_delay(1);
 	}
 

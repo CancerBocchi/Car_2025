@@ -29,7 +29,7 @@ int32 TraceLine_Last_Offset;
 int32 TraceLine_Forward_V;
 
 //基础速度
-float speed_forward;
+float speed_forward = 0;
 
 /**
  * @brief 巡线策略函数
@@ -50,10 +50,13 @@ void trace_line_method()
 
 		float yaw_now = Pos_PID_Controller(&TraceLine_Normal_Con,TraceLine_Aver_Offset);
 
-		if(TraceLine_Aver_Offset>50)
-			Car_Change_Speed(Car_Speed.Vx,speed_forward/2,yaw_now);
-		else
-			Car_Change_Speed(Car_Speed.Vx,speed_forward,yaw_now);
+		// if(TraceLine_Aver_Offset>5||TraceLine_Aver_Offset<-5){
+		// 	BUZZER_SPEAK;
+			Car_Change_Speed(Car_Speed.Vx,speed_forward-10*abs(TraceLine_Aver_Offset),yaw_now);
+		// }
+			
+		// else
+		// 	Car_Change_Speed(Car_Speed.Vx,speed_forward,yaw_now);
 		TraceLine_Aver_Offset = 0;	
 
 
@@ -91,7 +94,7 @@ void trace_line_init()
 	TraceLine_Vx_Con.Value_I = 200;
 	TraceLine_Vx_Con.Ref = 96;
 
-	Pos_PID_Init(&TraceLine_Normal_Con,-10,0,-10);
+	Pos_PID_Init(&TraceLine_Normal_Con,-7.5,0,-10);
 	TraceLine_Normal_Con.Output_Max = 200;
 	TraceLine_Normal_Con.Output_Min = -200;
 	TraceLine_Normal_Con.Value_I = 200;

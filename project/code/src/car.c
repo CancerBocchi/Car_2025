@@ -201,7 +201,7 @@ void car_motion_Init()
 	Car_Speed.Vx = 0.0f;
 	Car_Speed.Vy = 0.0f;
 		
-	Car_BootSwitch = 1;
+	Car_BootSwitch = 0;
 	//Car_Speed_ConRight = Con_By_AngleLoop;
 }
 
