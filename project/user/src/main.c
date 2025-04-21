@@ -23,6 +23,8 @@ int main()
 	led_thread = rt_thread_create("blink",led_thread_entry,NULL,1024,10,1000);
 	rt_thread_startup(led_thread);
 
+	rt_thread_delay(1000);
+
 	debug_tool_init();
 	
 	gpio_init(C3,GPO,0,GPO_PUSH_PULL);
@@ -49,7 +51,7 @@ int main()
 		if(!gpio_get_level(D16)){
 			Car_Start();
 			rt_thread_delay(2000);
-			speed_forward = 400;
+			speed_forward = 200;
 			// Car_Change_Speed(0,200,0);
 		}
 		rt_thread_delay(1);

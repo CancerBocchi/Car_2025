@@ -886,11 +886,13 @@ void Vision_CornerHandle()
  * @brief 圆环处理
  * 
  */
-#define Circule_Begin 0
+#define Circule_Begin  0
 #define Circule_State1 1
 #define Circule_State2 2
 #define Circule_State3 3
-#define Circule_Stop   4
+#define Circule_in     4
+#define Circule_Cor    5
+#define Circule_out    6
 void Vision_CirculeHandle()
 {   
     static int state = Circule_Begin;
@@ -907,36 +909,45 @@ void Vision_CirculeHandle()
         state = Circule_State1;
     }
     //防止错误判断
-    switch(Circule_LorR){
-        static int out_n;
-        case RIGHT_CIRCULE:
-            out_n = (!IsStrai(F.my_segment_L[0])&&(Vision_GetSegLenghth(F.my_segment_L[0]) >= 20))? out_n+1:0;
-            if(out_n == 3){
-                Current_Road = NormalRoads;
-                state = Circule_Begin;
-                out_n = 0;
-                rt_kprintf("RS:Out of Cir\n");
-            }
-        break;
-        case LEFT_CIRCULE:
-            out_n = (!IsStrai(F.my_segment_R[0])&&(Vision_GetSegLenghth(F.my_segment_R[0]) >= 20))? out_n+1:0;
-            if(out_n == 3){
-                Current_Road = NormalRoads;
-                state = Circule_Begin;
-                rt_kprintf("RS:Out of Cir\n");
-            }
-        break;
-    }
-
+    // switch(Circule_LorR){
+    //     static int out_n;
+    //     case RIGHT_CIRCULE:
+    //         out_n = (!IsStrai(F.my_segment_L[0])&&(Vision_GetSegLenghth(F.my_segment_L[0]) >= 20))? out_n+1:0;
+    //         if(out_n == 5){
+    //             Current_Road = NormalRoads;
+    //             state = Circule_Begin;
+    //             out_n = 0;
+    //             rt_kprintf("RS:Out of Cir\n");
+    //         }
+    //     break;
+    //     case LEFT_CIRCULE:
+    //         out_n = (!IsStrai(F.my_segment_R[0])&&(Vision_GetSegLenghth(F.my_segment_R[0]) >= 20))? out_n+1:0;
+    //         if(out_n == 5){
+    //             Current_Road = NormalRoads;
+    //             state = Circule_Begin;
+    //             rt_kprintf("RS:Out of Cir\n");
+    //         }
+    //     break;
+    // }
+    static int tick = 0;
     if(Circule_LorR == RIGHT_CIRCULE){//右边圆环
         if(state == Circule_State1){
 					
 					
-            if(F.FP_n_R && !IsLose(F.my_segment_R[0]))
-                Vision_ExtendLine(Image_S.rightBroder,F.feature_p_R[0].x,1);
+            if(F.FP_n_R && !IsLose(F.my_segment_R[0])){
+                float slope = Point_CalSlope((point_t){0,Image_S.leftBroder[0]},(point_t){69,Image_S.leftBroder[69]});
+                //负的斜率因为没做透视变换
+                Vision_SetLineWithPointK(Image_S.rightBroder,F.feature_p_R[0].x,-slope,0,69);
+            }
             if(IsLose(F.my_segment_R[0])){
-                state = Circule_State2; 
-                rt_kprintf("RS:Cir State2\n");
+                tick++;
+
+                if(tick == 5){
+                    state = Circule_State2; 
+                    rt_kprintf("RS:Cir State2\n");
+                    tick = 0;
+                }
+                
             }
                 
         }
@@ -953,8 +964,13 @@ void Vision_CirculeHandle()
             }
                 
             else if(!IsLose(F.my_segment_R[0])){
-                rt_kprintf("RS:Cir State3\n");
-                state = Circule_State3;
+                tick++;
+                if(tick == 5){
+                    rt_kprintf("RS:Cir State3\n");
+                    state = Circule_State3;
+                    tick = 0;
+                }
+                
             }
                 
         }
@@ -971,22 +987,44 @@ void Vision_CirculeHandle()
                     Vision_SetLineWithPointK(Image_S.rightBroder,F.my_segment_R[2].begin,-slope,0,69);
             }
             else if(IsLose(F.my_segment_R[0])){
-                state = Circule_Stop;
+                tick++;
+                if(tick == 4){
+                    state = Circule_in;
+                    rt_kprintf("RS:Cir State4\n");
+                    tick = 0;
+                }
+                
                 //BUZZER_SPEAK;
                 
             }
         }
-        else if(state == Circule_Stop){
-            if(IsLose(F.my_segment_R[0])){
-                float slope = Point_CalSlope((point_t){0,Image_S.leftBroder[0]},(point_t){69,Image_S.leftBroder[69]});
-                Vision_SetLineWithPointK(Image_S.rightBroder,F.feature_p_R[0].x,-slope,0,69);
+        else if(state == Circule_in){
+            if(IsLose(F.my_segment_L[0])&&F.segment_n_L == 1 &&
+                IsLose(F.my_segment_R[0])&&F.segment_n_R == 1){
+                Image_S.leftBroder[0] = 187;
+                Vision_set_AdditionalLine(0,69,Image_S.leftBroder);       
             }
-            else if(!IsLose(F.my_segment_R[0])){
-                state = Circule_Begin;
-                Current_Road = NormalRoads;
-                MCX_Change_Mode(MCX_Detection_Mode);
-                rt_kprintf("RS:Out of Cir\n");
+            else if(IsLose(F.my_segment_R[0])){
+                // float slope = Point_CalSlope((point_t){0,Image_S.leftBroder[0]},(point_t){69,Image_S.leftBroder[69]});
+                // Vision_SetLineWithPointK(Image_S.rightBroder,F.feature_p_R[0].x,-slope,0,69);
+                //float slope = Point_CalSlope((point_t){69,Image_S.leftBroder[69]},F.feature_p_R[0]);
+                // Image_S.leftBroder[F.feature_p_R->x] = F.feature_p_R->y;
+                // Vision_set_AdditionalLine(F.feature_p_R->x,69,Image_S.leftBroder);
+                // Vision_SetLose(Image_S.rightBroder,0,69);
+                Image_S.leftBroder[0] = 187;
+                Vision_set_AdditionalLine(0,69,Image_S.leftBroder);  
             }
+            if(IsArc(F.my_segment_L[0])){
+                tick++;
+                if(tick==5){
+                    state = Circule_Cor;
+                    Current_Road = NormalRoads;
+                    rt_kprintf("RS:Cir State5\n");
+                }
+                
+            }
+        }
+        else if(state == Circule_Cor){
         }
 
     }
@@ -1030,11 +1068,11 @@ void Vision_CirculeHandle()
                     
             }
             else if(IsLose(F.my_segment_L[0])){
-                state = Circule_Stop;
+                state = Circule_in;
                 //BUZZER_SPEAK;
             }
         }
-        else if(state == Circule_Stop){
+        else if(state == Circule_in){
             if(IsLose(F.my_segment_L[0])){
                 float slope = Point_CalSlope((point_t){0,Image_S.rightBroder[0]},(point_t){69,Image_S.rightBroder[69]});
                 Vision_SetLineWithPointK(Image_S.leftBroder,F.feature_p_L[0].x,-slope,0,69);

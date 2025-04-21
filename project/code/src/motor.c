@@ -134,7 +134,9 @@ void Motor_init()
 	Motor_PID_C.Value_I_Max = 10000;
 	MC_target_speed = 0;
 	
-
+	pwm_set_duty(MOTORA_PWM,0);
+	pwm_set_duty(MOTORB_PWM,0);
+	pwm_set_duty(MOTORC_PWM,0);
 
 #if MOTOR_LOOP_METHOD == MOTOR_THREAD
 

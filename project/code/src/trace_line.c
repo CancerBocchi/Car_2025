@@ -52,7 +52,9 @@ void trace_line_method()
 
 		// if(TraceLine_Aver_Offset>5||TraceLine_Aver_Offset<-5){
 		// 	BUZZER_SPEAK;
-			Car_Change_Speed(Car_Speed.Vx,speed_forward-10*abs(TraceLine_Aver_Offset),yaw_now);
+			float speed_now = speed_forward-10*abs(TraceLine_Aver_Offset);
+			speed_now = speed_now<0? 0:speed_now;
+			Car_Change_Speed(Car_Speed.Vx,speed_now,yaw_now);
 		// }
 			
 		// else
@@ -75,7 +77,8 @@ void trace_line_method()
 //  @return     void
 //  @e.g.       初始化了摄像头屏幕 以及注册了线程
 //-------------------------------------------------------------------------------------------------------------------
-void trace_line_init()
+void 
+trace_line_init()
 {
 	rt_kprintf("trace line module init:\n");
 	
@@ -85,8 +88,8 @@ void trace_line_init()
 	Pos_PID_Init(&TraceLine_Yaw_Con,3,1,0);
 	TraceLine_Yaw_Con.Output_Max = 150;
 	TraceLine_Yaw_Con.Output_Min = -150;
-	TraceLine_Yaw_Con.Value_I = 200;
-	TraceLine_Yaw_Con.Ref = 96;
+		TraceLine_Yaw_Con.Value_I = 200;
+		TraceLine_Yaw_Con.Ref = 96;
 	
 	Pos_PID_Init(&TraceLine_Vx_Con,1,0,0);
 	TraceLine_Vx_Con.Output_Max = 50;
@@ -94,7 +97,7 @@ void trace_line_init()
 	TraceLine_Vx_Con.Value_I = 200;
 	TraceLine_Vx_Con.Ref = 96;
 
-	Pos_PID_Init(&TraceLine_Normal_Con,-7.5,0,-10);
+	Pos_PID_Init(&TraceLine_Normal_Con,-8,0,-10);
 	TraceLine_Normal_Con.Output_Max = 200;
 	TraceLine_Normal_Con.Output_Min = -200;
 	TraceLine_Normal_Con.Value_I = 200;
