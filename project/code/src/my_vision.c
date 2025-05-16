@@ -9,9 +9,6 @@ RoadSymbol_type Current_Road;
 
 Feature F;
 
-// 圆环左右标识位
-uint8_t Circule_LorR;
-
 /**
  * @brief 根据赛道元素选择处理
  * 
@@ -751,6 +748,7 @@ void Vision_SetLineWithPointK(int16* broder,int seed,float slope,int x1,int x2){
  */
 #define Cross_Begin   0
 #define Cross_State_1 1
+uint8_t L_or_R_Cross;
 void Vision_CrossHandle()
 {
     static int state = Cross_Begin;
@@ -784,10 +782,10 @@ void Vision_CrossHandle()
                 //     rt_kprintf("%d\n",Image_S.rightBroder[i]);
                 // while(1);
                 if(k<0){
-                    L_or_R_Cross = Right_Cross;
+                    L_or_R_Cross = RIGHT_CROSS;
                 }
                 else 
-                    L_or_R_Cross = Left_Cross;
+                    L_or_R_Cross = LEFT_CROSS;
             }
             state = Cross_Begin;
             Current_Road = NormalRoads;
@@ -907,14 +905,14 @@ void Vision_CirculeState1_Handle(){
     
     static int tick = 0;
 
-    if(Circule_Handle.circule_fp_n && !IsLose(Circule_Handle.circule_seg[0])){
+    if(*(Circule_Handle.circule_fp_n) && !IsLose(Circule_Handle.circule_seg[0])){
         float slope = Point_CalSlope((point_t){0,Circule_Handle.anti_cir_broder[0]},(point_t){imgRow-1,Circule_Handle.anti_cir_broder[imgRow-1]});
         //负的斜率因为没做透视变换
         Vision_SetLineWithPointK(Circule_Handle.circule_broder,Circule_Handle.circule_fp[0].x,-slope,0,imgRow-1);
     }
     if(IsLose(Circule_Handle.circule_seg[0])){
         Circule_Handle.tick++;
-        if(tick == 5){
+        if(Circule_Handle.tick == 5){
             Circule_Handle.state = Circule_State2; 
             rt_kprintf("RS:Cir State2\n");
             Circule_Handle.tick = 0;
@@ -929,7 +927,7 @@ void Vision_CirculeState2_Handle(){
         //计算直线的平均斜率
         float slope = Point_CalSlope((point_t){0,Circule_Handle.anti_cir_broder[0]},(point_t){imgRow-1,Circule_Handle.anti_cir_broder[imgRow-1]});
         //得到圆弧的最小点
-        int seed = Line_FindMinPoint(Circule_Handle.circule_broder,Circule_Handle.circule_seg[1].begin,Circule_Handle.circule_seg[1].end);
+        int seed = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?Line_FindMaxPoint(Circule_Handle.circule_broder,Circule_Handle.circule_seg[1].begin,Circule_Handle.circule_seg[1].end):Line_FindMinPoint(Circule_Handle.circule_broder,Circule_Handle.circule_seg[1].begin,Circule_Handle.circule_seg[1].end);
         //负的斜率因为没做透视变换
         Vision_SetLineWithPointK(Circule_Handle.circule_broder,seed,-slope,0,imgRow-1);
     }
@@ -952,11 +950,11 @@ void Vision_CirculeState3_Handle()
         float slope = Point_CalSlope((point_t){0,Circule_Handle.anti_cir_broder[0]},(point_t){imgRow-1,Circule_Handle.anti_cir_broder[imgRow-1]});
         //根据远处的角点进行补线
         if(IsArc(Circule_Handle.circule_seg[0])){
-            int seed = Line_FindMinPoint(Circule_Handle.circule_broder,Circule_Handle.circule_seg[1].begin,Circule_Handle.circule_seg[1].end);
+            int seed = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?Line_FindMaxPoint(Circule_Handle.circule_broder,Circule_Handle.circule_seg[0].begin,Circule_Handle.circule_seg[0].end):Line_FindMinPoint(Circule_Handle.circule_broder,Circule_Handle.circule_seg[0].begin,Circule_Handle.circule_seg[0].end);
             Vision_SetLineWithPointK(Circule_Handle.circule_broder,seed,-slope,0,imgRow-1);
         }
         else if(IsCorner(Circule_Handle.circule_seg[0]))
-            Vision_SetLineWithPointK(Circule_Handle.circule_broder,Circule_Handle.circule_seg[2].begin,-slope,0,imgRow-1);
+            Vision_SetLineWithPointK(Circule_Handle.circule_broder,Circule_Handle.circule_seg[0].begin,-slope,0,imgRow-1);
     }
     else if(IsLose(Circule_Handle.circule_seg[0])){
         Circule_Handle.tick++;
@@ -970,8 +968,8 @@ void Vision_CirculeState3_Handle()
 
 void Vision_CirculeIn_Handle(){
      //直接从左向右画一条直线
-    Circule_Handle.anti_cir_broder[0] = 187;
-    Circule_Handle.anti_cir_broder[69] = 187/8;
+    Circule_Handle.anti_cir_broder[0] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 15:187;
+    Circule_Handle.anti_cir_broder[69] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 187:20;
     Vision_set_AdditionalLine(0,imgRow-1,Circule_Handle.anti_cir_broder); 
     Vision_SetLose(Circule_Handle.circule_broder,0,imgRow-1);
 
@@ -999,13 +997,15 @@ void Vision_CirculeCor_Handle(){
 }
 
 void Vision_CirculeOut_Handle(){
-    Circule_Handle.anti_cir_broder[0] = 187;
-    Circule_Handle.anti_cir_broder[69] = 7;
+
+    Circule_Handle.anti_cir_broder[0] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 7:180;
+    Circule_Handle.anti_cir_broder[69] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 180:7;
+
     Vision_set_AdditionalLine(0,69,Circule_Handle.anti_cir_broder);       
     Vision_SetLose(Circule_Handle.circule_broder,0,69);
     if(IsStrai(Circule_Handle.anti_cir_seg[0])){
         Circule_Handle.tick++;
-        if(Circule_Handle.tick==1){
+        if(Circule_Handle.tick==2){
             Circule_Handle.state = Circule_Begin;
             // Car_DistanceMotion(50,0,2);
             rt_kprintf("RS:out of cir\n");
@@ -1028,25 +1028,21 @@ void Vision_CirculeHandle()
         else if(IsStrai(F.my_segment_R[0]) && F.segment_n_R == 1)
             Circule_Handle.Circule_LorR = LEFT_CIRCULE;
 
-        Circule_Handle.state = Circule_State1;
+        Circule_Handle.circule_seg     = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?F.my_segment_L     :F.my_segment_R;
+        Circule_Handle.anti_cir_seg    = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?F.my_segment_R     :F.my_segment_L;
 
-        Circule_Handle.circule_seg     = (Circule_LorR == LEFT_CIRCULE)?F.my_segment_L     :F.my_segment_R;
-        Circule_Handle.anti_cir_seg    = (Circule_LorR == LEFT_CIRCULE)?F.my_segment_R     :F.my_segment_L;
+        Circule_Handle.circule_broder  = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?Image_S.leftBroder :Image_S.rightBroder;
+        Circule_Handle.anti_cir_broder = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?Image_S.rightBroder:Image_S.leftBroder;
 
-        Circule_Handle.circule_broder  = (Circule_LorR == LEFT_CIRCULE)?Image_S.leftBroder :Image_S.rightBroder;
-        Circule_Handle.anti_cir_broder = (Circule_LorR == LEFT_CIRCULE)?Image_S.rightBroder:Image_S.leftBroder;
+        Circule_Handle.circule_fp      = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?F.feature_p_L      :F.feature_p_R;
+        Circule_Handle.anti_cir_fp     = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?F.feature_p_R      :F.feature_p_L;
 
-        Circule_Handle.circule_fp      = (Circule_LorR == LEFT_CIRCULE)?F.feature_p_L      :F.feature_p_R;
-        Circule_Handle.anti_cir_fp     = (Circule_LorR == LEFT_CIRCULE)?F.feature_p_R      :F.feature_p_L;
-
-        Circule_Handle.circule_fp_n    = (Circule_LorR == LEFT_CIRCULE)?&F.FP_n_L          :&F.FP_n_R;
-        Circule_Handle.anti_cir_fp_n   = (Circule_LorR == LEFT_CIRCULE)?&F.FP_n_R          :&F.FP_n_L;
+        Circule_Handle.circule_fp_n    = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?&F.FP_n_L          :&F.FP_n_R;
+        Circule_Handle.anti_cir_fp_n   = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?&F.FP_n_R          :&F.FP_n_L;
 
         Circule_Handle.tick            = 0;
         Circule_Handle.state           = Circule_State1;
     }
-
-
 
 
     //防止错误判断
@@ -1074,9 +1070,10 @@ void Vision_CirculeHandle()
         
         static int out_n;
         out_n = (!IsStrai(Circule_Handle.anti_cir_seg[0])&&(Vision_GetSegLenghth(Circule_Handle.anti_cir_seg[0]) >= 20))? out_n+1:0;
-        if(out_n == 5){
+        if(out_n == 7){
             Current_Road = NormalRoads;
             Circule_Handle.state = Circule_Begin;
+            out_n = 0;
             rt_kprintf("RS:error detection\n");
         }
     }
