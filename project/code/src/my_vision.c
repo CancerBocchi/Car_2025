@@ -7,21 +7,10 @@ int adaptivePara = 6;
 
 RoadSymbol_type Current_Road;
 
+Feature F;
+
 // 圆环左右标识位
 uint8_t Circule_LorR;
-
-//路况特征判断结构体
-struct{
-    segment_t my_segment_L[10];
-    point_t feature_p_L[5];
-    int FP_n_L;
-    int segment_n_L;
-
-    segment_t my_segment_R[10];
-    point_t feature_p_R[5];
-    int FP_n_R;
-    int segment_n_R;
-}F;
 
 /**
  * @brief 根据赛道元素选择处理
@@ -909,31 +898,33 @@ void Vision_CirculeHandle()
         state = Circule_State1;
     }
     //防止错误判断
-    // switch(Circule_LorR){
-    //     static int out_n;
-    //     case RIGHT_CIRCULE:
-    //         out_n = (!IsStrai(F.my_segment_L[0])&&(Vision_GetSegLenghth(F.my_segment_L[0]) >= 20))? out_n+1:0;
-    //         if(out_n == 5){
-    //             Current_Road = NormalRoads;
-    //             state = Circule_Begin;
-    //             out_n = 0;
-    //             rt_kprintf("RS:Out of Cir\n");
-    //         }
-    //     break;
-    //     case LEFT_CIRCULE:
-    //         out_n = (!IsStrai(F.my_segment_R[0])&&(Vision_GetSegLenghth(F.my_segment_R[0]) >= 20))? out_n+1:0;
-    //         if(out_n == 5){
-    //             Current_Road = NormalRoads;
-    //             state = Circule_Begin;
-    //             rt_kprintf("RS:Out of Cir\n");
-    //         }
-    //     break;
-    // }
+    if(state == Circule_State1 || state == Circule_State2 || state == Circule_State3){
+        switch(Circule_LorR){
+            static int out_n;
+            case RIGHT_CIRCULE:
+                out_n = (!IsStrai(F.my_segment_L[0])&&(Vision_GetSegLenghth(F.my_segment_L[0]) >= 20))? out_n+1:0;
+                if(out_n == 5){
+                    Current_Road = NormalRoads;
+                    state = Circule_Begin;
+                    out_n = 0;
+                    rt_kprintf("RS:Out of Cir\n");
+                }
+            break;
+            case LEFT_CIRCULE:
+                out_n = (!IsStrai(F.my_segment_R[0])&&(Vision_GetSegLenghth(F.my_segment_R[0]) >= 20))? out_n+1:0;
+                if(out_n == 5){
+                    Current_Road = NormalRoads;
+                    state = Circule_Begin;
+                    rt_kprintf("RS:Out of Cir\n");
+                }
+            break;
+        }
+    }
+
     static int tick = 0;
     if(Circule_LorR == RIGHT_CIRCULE){//右边圆环
         if(state == Circule_State1){
-					
-					
+
             if(F.FP_n_R && !IsLose(F.my_segment_R[0])){
                 float slope = Point_CalSlope((point_t){0,Image_S.leftBroder[0]},(point_t){69,Image_S.leftBroder[69]});
                 //负的斜率因为没做透视变换
@@ -988,9 +979,9 @@ void Vision_CirculeHandle()
             }
             else if(IsLose(F.my_segment_R[0])){
                 tick++;
-                if(tick == 4){
+                if(tick == 2){
                     state = Circule_in;
-                    rt_kprintf("RS:Cir State4\n");
+                    rt_kprintf("RS:Cir in\n");
                     tick = 0;
                 }
                 
@@ -998,35 +989,56 @@ void Vision_CirculeHandle()
                 
             }
         }
-        else if(state == Circule_in){
-            if(IsLose(F.my_segment_L[0])&&F.segment_n_L == 1 &&
-                IsLose(F.my_segment_R[0])&&F.segment_n_R == 1){
-                Image_S.leftBroder[0] = 187;
-                Vision_set_AdditionalLine(0,69,Image_S.leftBroder);       
-            }
-            else if(IsLose(F.my_segment_R[0])){
-                // float slope = Point_CalSlope((point_t){0,Image_S.leftBroder[0]},(point_t){69,Image_S.leftBroder[69]});
-                // Vision_SetLineWithPointK(Image_S.rightBroder,F.feature_p_R[0].x,-slope,0,69);
-                //float slope = Point_CalSlope((point_t){69,Image_S.leftBroder[69]},F.feature_p_R[0]);
-                // Image_S.leftBroder[F.feature_p_R->x] = F.feature_p_R->y;
-                // Vision_set_AdditionalLine(F.feature_p_R->x,69,Image_S.leftBroder);
-                // Vision_SetLose(Image_S.rightBroder,0,69);
-                Image_S.leftBroder[0] = 187;
-                Vision_set_AdditionalLine(0,69,Image_S.leftBroder);  
-            }
-            if(IsArc(F.my_segment_L[0])){
+        else if(state == Circule_in){     
+
+            //直接从左向右画一条直线
+            Image_S.leftBroder[0] = 187;
+            Image_S.leftBroder[69] = 187/8;
+            Vision_set_AdditionalLine(0,69,Image_S.leftBroder); 
+            Vision_SetLose(Image_S.rightBroder,0,69);
+
+            if(IsArcCorner(F.my_segment_L[0])){
                 tick++;
-                if(tick==5){
+                if(tick==4){
                     state = Circule_Cor;
-                    Current_Road = NormalRoads;
+                    tick = 0;
                     rt_kprintf("RS:Cir State5\n");
                 }
                 
             }
         }
         else if(state == Circule_Cor){
-        }
 
+            if(IsArc(F.my_segment_L[0])){
+                tick++;
+                if(tick==5){
+                    state = Circule_out;
+                    rt_kprintf("RS:Cir Out\n");
+                    tick = 0;
+                }
+            }
+            else
+                tick = 0;
+        }  
+        else if(state == Circule_out){
+            Image_S.leftBroder[0] = 187;
+            Image_S.leftBroder[69] = 7;
+            Vision_set_AdditionalLine(0,69,Image_S.leftBroder);       
+            Vision_SetLose(Image_S.rightBroder,0,69);
+            if(IsStrai(F.my_segment_L[0])){
+                tick++;
+                if(tick==1){
+                    state = Circule_State1;
+                    // Car_DistanceMotion(50,0,2);
+                    rt_kprintf("RS:out of cir\n");
+                    // Car_Stop();
+                    // while(1); 
+                    Current_Road = NormalRoads;
+                    tick = 0;
+
+                }
+            }
+        }
     }
     
     else{//左边圆环
@@ -1072,18 +1084,55 @@ void Vision_CirculeHandle()
                 //BUZZER_SPEAK;
             }
         }
-        else if(state == Circule_in){
-            if(IsLose(F.my_segment_L[0])){
-                float slope = Point_CalSlope((point_t){0,Image_S.rightBroder[0]},(point_t){69,Image_S.rightBroder[69]});
-                Vision_SetLineWithPointK(Image_S.leftBroder,F.feature_p_L[0].x,-slope,0,69);
+        else if(state == Circule_in){     
+
+            //直接从左向右画一条直线
+            Image_S.rightBroder[0] = 187;
+            Image_S.rightBroder[69] = 187/8;
+            Vision_set_AdditionalLine(0,69,Image_S.rightBroder); 
+            Vision_SetLose(Image_S.leftBroder,0,69);
+
+            if(IsArcCorner(F.my_segment_R[0])){
+                tick++;
+                if(tick==4){
+                    state = Circule_Cor;
+                    tick = 0;
+                    rt_kprintf("RS:Cir State5\n");
+                }
+                
             }
-            else if(!IsLose(F.my_segment_L[0])){
-                state = Circule_Begin;
-                Current_Road = NormalRoads;
-                MCX_Change_Mode(MCX_Detection_Mode);
-                rt_kprintf("RS:Out of Cir\n");
+        }
+        else if(state == Circule_Cor){
+
+            if(IsArc(F.my_segment_R[0])){
+                tick++;
+                if(tick==5){
+                    state = Circule_out;
+                    rt_kprintf("RS:Cir Out\n");
+                    tick = 0;
+                }
             }
-						
+            else
+                tick = 0;
+        }  
+        else if(state == Circule_out){
+            Image_S.rightBroder[0] = 187;
+            Image_S.rightBroder[69] = 7;
+            Vision_set_AdditionalLine(0,69,Image_S.rightBroder);       
+            Vision_SetLose(Image_S.leftBroder,0,69);
+            if(IsStrai(F.my_segment_R[0])){
+                tick++;
+                if(tick==1){
+                    state = Circule_State1;
+                    // Car_DistanceMotion(50,0,2);
+                    rt_kprintf("RS:out of cir\n");
+                    // Car_Stop();
+                    // while(1); 
+                    Current_Road = NormalRoads;
+                    tick = 0;
+
+                }
+            }
         }
     }
 }

@@ -13,9 +13,9 @@ void buzzer_entry()
 	{
 		rt_mb_recv(buzzer_mail,&buzzer_buffer,RT_WAITING_FOREVER);
 		
-		gpio_set_level(BUZZER_PIN,1);
-		rt_thread_delay(500);
-		gpio_set_level(BUZZER_PIN,0);
+		// gpio_set_level(BUZZER_PIN,1);
+		// rt_thread_delay(500);
+		// gpio_set_level(BUZZER_PIN,0);
 	}
 }
 

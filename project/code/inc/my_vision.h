@@ -27,6 +27,7 @@ typedef enum segment_type{
 
 }segment_type;
 
+
 #define IsArcCorner(seg)        (seg.type == arc_segment||seg.type == corner_segment)
 #define IsLose(seg)             (seg.type == lose_segment)
 #define IsStrai(seg)            (seg.type == straight_segment)
@@ -52,6 +53,21 @@ typedef struct segment{
     segment_type type;
     uint8 position;
 }segment_t;
+
+//路况特征判断结构体
+typedef struct{
+    segment_t my_segment_L[10];
+    point_t feature_p_L[5];
+    int FP_n_L;
+    int segment_n_L;
+
+    segment_t my_segment_R[10];
+    point_t feature_p_R[5];
+    int FP_n_R;
+    int segment_n_R;
+}Feature;
+
+extern Feature F;
 
 #define Vision_GetSegLenghth(seg) (fabs(seg.begin - seg.end + 1))
 

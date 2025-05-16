@@ -77,8 +77,7 @@ void trace_line_method()
 //  @return     void
 //  @e.g.       初始化了摄像头屏幕 以及注册了线程
 //-------------------------------------------------------------------------------------------------------------------
-void 
-trace_line_init()
+void trace_line_init()
 {
 	rt_kprintf("trace line module init:\n");
 	
@@ -88,8 +87,8 @@ trace_line_init()
 	Pos_PID_Init(&TraceLine_Yaw_Con,3,1,0);
 	TraceLine_Yaw_Con.Output_Max = 150;
 	TraceLine_Yaw_Con.Output_Min = -150;
-		TraceLine_Yaw_Con.Value_I = 200;
-		TraceLine_Yaw_Con.Ref = 96;
+	TraceLine_Yaw_Con.Value_I = 200;
+	TraceLine_Yaw_Con.Ref = 96;
 	
 	Pos_PID_Init(&TraceLine_Vx_Con,1,0,0);
 	TraceLine_Vx_Con.Output_Max = 50;

@@ -77,6 +77,7 @@ MSH_CMD_EXPORT(CarStart , Start The Car);
 */
 static void  CarStop(){
     Car_Stop();
+    rt_kprintf("Car Stop\n");
 }
 MSH_CMD_EXPORT(CarStop , Stop The Car);
 
@@ -182,7 +183,7 @@ static void arrprint(int argc, char**argv)
 	help:
     rt_kprintf("you can use like this:\n");
     rt_kprintf("arrprint <_target_>  -----   printf target content in an array\n");
-		rt_kprintf("arrprint show        -----   show the array in the register\n");
+    rt_kprintf("arrprint show        -----   show the array in the register\n");
     rt_kprintf("arrprint help        -----   get help information\n");
 	return;
 
@@ -320,36 +321,6 @@ help:
 
 MSH_CMD_EXPORT(CarMove, CarMove sample: CarMove <dx> <dy> <dt>);
 
-
-/**
- * @brief 硬件测试程序
-*/
-static void HardwareTest(){
-    rt_kprintf("Motion test begins\n");
-    Car_Change_Speed(100,0,0);
-    rt_thread_delay(500);
-    Car_Change_Speed(-100,0,0);
-    rt_thread_delay(500);
-
-    rt_kprintf("Step Motor test begins\n");
-    Step_Motor_Catch();
-
-    rt_kprintf("Electromagnet test begins\n");
-    Magnet_Catch;
-    rt_thread_delay(1000);
-    Magnet_Put;
-
-    rt_kprintf("Buzzer test begins\n");
-    BUZZER_SPEAK;
-    rt_thread_delay(500);
-
-    rt_kprintf("Hardware test ends\n");
-
-}
-
-MSH_CMD_EXPORT(HardwareTest, HardwareTest sample: HardwareTest);
-
-
 /**
  * @brief 车定距跑指令
 */
@@ -365,3 +336,61 @@ static void SetBasket(int argc, char**argv){
 }
 
 MSH_CMD_EXPORT(SetBasket, SetBasket sample: SetBasket <num>);
+
+/**
+ * @brief 获得分段信息
+*/
+static void GetSeg(void){
+
+    for(int i = F.segment_n_L; i > 0; i--){
+        switch (F.my_segment_L->type){
+            case straight_segment:
+                rt_kprintf("left_seg%d:Straight\n",i);
+                break;
+
+            case lose_segment:
+                rt_kprintf("left_seg%d:Lose\n",i);
+                break;
+
+            case corner_segment:
+                rt_kprintf("left_seg%d:Corner\n",i);
+                break;
+
+            case arc_segment:
+                rt_kprintf("left_seg%d:Arc\n",i);
+                break;
+
+            case NULL_segment:
+                rt_kprintf("left_seg%d:NULL\n",i);
+                break;
+        }
+    }
+
+    for(int i = F.segment_n_R; i > 0; i--){
+        switch (F.my_segment_R->type){
+            case straight_segment:
+                rt_kprintf("right_seg%d:Straight\n",i);
+                break;
+
+            case lose_segment:
+                rt_kprintf("right_seg%d:Lose\n",i);
+                break;
+
+            case corner_segment:
+                rt_kprintf("right_seg%d:Corner\n",i);
+                break;
+
+            case arc_segment:
+                rt_kprintf("right_seg%d:Arc\n",i);
+                break;
+
+            case NULL_segment:
+                rt_kprintf("right_seg%d:NULL\n",i);
+                break;
+        }
+    }
+
+
+}
+
+MSH_CMD_EXPORT(GetSeg , Get Segent);

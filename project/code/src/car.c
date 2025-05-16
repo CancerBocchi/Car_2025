@@ -202,6 +202,7 @@ void car_motion_Init()
 	Car_Speed.Vy = 0.0f;
 		
 	Car_BootSwitch = 0;
+	Car_Stop();
 	//Car_Speed_ConRight = Con_By_AngleLoop;
 }
 
@@ -210,9 +211,10 @@ void car_motion_Init()
 */
 void Car_Stop()
 {
-	Car_Change_Speed(0,0,0);
-	rt_thread_delay(1000);
 	Car_Switch(0);
+	pwm_set_duty(MOTORA_PWM,0);
+	pwm_set_duty(MOTORB_PWM,0);
+	pwm_set_duty(MOTORC_PWM,0);
 }
 
 /**
