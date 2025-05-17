@@ -17,6 +17,9 @@
 #define LEFT_CIRCULE        0
 #define RIGHT_CIRCULE       1
 
+#define LEFT_CROSS          0
+#define RIGHT_CROSS         1
+
 //线段类型判断
 typedef enum segment_type{
     NULL_segment        = 0,   //未标记状态

@@ -23,7 +23,6 @@ extern int16_t center_x;
 extern int16_t center_y;
 extern uint8_t cur_PicNum;
 extern uint8_t MCX_rx_flag;
-extern uint8_t L_or_R_pic;
 
 void MCX_Change_Mode(uint8_t mode);
 void MCX_UART_Init(void);
@@ -31,3 +30,5 @@ void MCX_uart_handle();
 void MCX_Clear();
 
 #endif
+
+

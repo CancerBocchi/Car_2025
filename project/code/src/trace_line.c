@@ -140,6 +140,13 @@ void trace_line_entry()
 			trace_line_method();
 		}
 		rt_thread_delay(1);
+
+
+		if(MCX_Detection_Flag){
+			Car_Stop();
+			while(1);
+			MCX_Detection_Flag = 0;
+		}
 		//状态切换管理 若art模块发出了识别到图片的信号，则阻塞该线程，运行边沿检测线程
 		// if(!error_detect_flag){
 		// 	if(MCX_Detection_Flag && !final_flag){

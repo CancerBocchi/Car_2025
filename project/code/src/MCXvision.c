@@ -9,7 +9,6 @@ uint8_t MCX_uart_rx_buffer;
 
 uint8_t MCX_rx_flag;
 
-
 //记录当前模式
 typedef enum{
     Reset_Mode,
@@ -25,12 +24,9 @@ MCX_Current_Mode mcxCurrent_Mode;
 //此变量用于保存帧
 uint8_t MCX_rx_buffer[128];
 
-
-
 int16_t center_x;
 int16_t center_y;
-uint8_t cur_PicNum;
-uint8_t L_or_R_pic;
+
 
 void MCX_uart_callback(LPUART_Type *base, lpuart_handle_t *handle, status_t status, void *userData)
 {
@@ -80,20 +76,12 @@ void MCX_Change_Mode(uint8_t mode){
 	uart_write_byte(MCX_UART,mode);
 	switch (mode)
 	{
-		case 'L':
-			mcxCurrent_Mode = Location_Mode;
-		break;
-
 		case 'R':
 			mcxCurrent_Mode = Reset_Mode;
 		break;
 
 		case 'D':
 			mcxCurrent_Mode = Detection_Mode;
-		break;
-
-		case 'F':
-			mcxCurrent_Mode = Put_Mode;
 		break;
 	}
 }
@@ -105,37 +93,17 @@ void MCX_Change_Mode(uint8_t mode){
 void MCX_uart_handle(){
 	switch (mcxCurrent_Mode)
 	{
-		case Location_Mode:
-			center_x = MCX_rx_buffer[2]*1.5;
-			center_y = MCX_rx_buffer[3]*1.5;
-			cur_PicNum = MCX_rx_buffer[4];
-			// rt_kprintf("%d,%d\n",center_x,center_y);
-		break;
-
 		case Reset_Mode:
 
 		break;
 
 		case Detection_Mode:
-			
-
-			if(MCX_rx_buffer[4] != 0){
-				center_x = MCX_rx_buffer[2]*1.5;
-				center_y = MCX_rx_buffer[3]*1.5;
-				cur_PicNum = MCX_rx_buffer[4];
-				L_or_R_pic = MCX_rx_buffer[1];
-				rt_kprintf("%d,%d,%d\n",cur_PicNum,center_x,center_y);
+			if(MCX_rx_buffer[1] != 0){
+				center_x = MCX_rx_buffer[2];
+				center_y = MCX_rx_buffer[3];
 				MCX_Detection_Flag = 1;
-				MCX_Change_Mode(MCX_Reset_Mode);
 			}
-
 		break;
-
-		case Put_Mode:
-			center_x = MCX_rx_buffer[2]*1.5;
-			center_y = MCX_rx_buffer[3]*1.5;
-			cur_PicNum = MCX_rx_buffer[4];
-			//rt_kprintf("%d,%d,%d\n",center_x,center_y,cur_PicNum);
 	}
 	MCX_rx_flag = 1;
 }
@@ -145,11 +113,7 @@ void MCX_uart_handle(){
  * 
  */
 void MCX_Clear(){
-	center_x = 0;
-	center_y = 0;
-	cur_PicNum = 0;
-	MCX_Detection_Flag = 0;
-	MCX_rx_flag = 0;
+
 }
 
 /**
