@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\rt1064.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\rt1064.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Sat May 17 16:38:11 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Sat May 17 21:08:44 2025
 <BR><P>
 <H3>Maximum Stack Usage =       2872 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -2618,8 +2618,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[220]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_write_byte
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MCXMode
-<LI><a href="#[221]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MCX_UART_Init
+<BR>[Called By]<UL><LI><a href="#[221]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MCX_UART_Init
 </UL>
 
 <P><STRONG><a name="[221]"></a>MCX_UART_Init</STRONG> (Thumb, 130 bytes, Stack size 32 bytes, mcxvision.o(.text.MCX_UART_Init))
@@ -2628,8 +2627,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[225]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_set_handle
 <LI><a href="#[224]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_rx_interrupt
 <LI><a href="#[222]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_init
-<LI><a href="#[223]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__NVIC_SetPriority
 <LI><a href="#[21f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MCX_Change_Mode
+<LI><a href="#[223]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__NVIC_SetPriority
 <LI><a href="#[139]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_kprintf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[2f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;$Super$$main
@@ -2699,8 +2698,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[29f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mecanumRun
 </UL>
 
-<P><STRONG><a name="[22f]"></a>Motor_init</STRONG> (Thumb, 336 bytes, Stack size 72 bytes, motor.o(.text.Motor_init))
-<BR><BR>[Stack]<UL><LI>Max Depth = 928<LI>Call Chain = Motor_init &rArr; pwm_init &rArr; CLOCK_GetFreq &rArr; CLOCK_GetPerClkFreq &rArr; CLOCK_GetIpgFreq &rArr; CLOCK_GetAhbFreq &rArr; CLOCK_GetPeriphClkFreq &rArr; CLOCK_GetSysPfdFreq &rArr; CLOCK_GetPllFreq &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
+<P><STRONG><a name="[22f]"></a>Motor_init</STRONG> (Thumb, 328 bytes, Stack size 56 bytes, motor.o(.text.Motor_init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 912<LI>Call Chain = Motor_init &rArr; pwm_init &rArr; CLOCK_GetFreq &rArr; CLOCK_GetPerClkFreq &rArr; CLOCK_GetIpgFreq &rArr; CLOCK_GetAhbFreq &rArr; CLOCK_GetPeriphClkFreq &rArr; CLOCK_GetSysPfdFreq &rArr; CLOCK_GetPllFreq &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[231]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_init
 <LI><a href="#[230]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encoder_init
@@ -3341,7 +3340,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[29c]"></a>car_motion_Init</STRONG> (Thumb, 224 bytes, Stack size 24 bytes, car.o(.text.car_motion_Init))
-<BR><BR>[Stack]<UL><LI>Max Depth = 952<LI>Call Chain = car_motion_Init &rArr; Motor_init &rArr; pwm_init &rArr; CLOCK_GetFreq &rArr; CLOCK_GetPerClkFreq &rArr; CLOCK_GetIpgFreq &rArr; CLOCK_GetAhbFreq &rArr; CLOCK_GetPeriphClkFreq &rArr; CLOCK_GetSysPfdFreq &rArr; CLOCK_GetPllFreq &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
+<BR><BR>[Stack]<UL><LI>Max Depth = 936<LI>Call Chain = car_motion_Init &rArr; Motor_init &rArr; pwm_init &rArr; CLOCK_GetFreq &rArr; CLOCK_GetPerClkFreq &rArr; CLOCK_GetIpgFreq &rArr; CLOCK_GetAhbFreq &rArr; CLOCK_GetPeriphClkFreq &rArr; CLOCK_GetSysPfdFreq &rArr; CLOCK_GetPllFreq &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Car_Stop
 <LI><a href="#[233]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Pos_PID_Init
@@ -4522,7 +4521,6 @@ Global Symbols
 <LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setarg
 <LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arrprint
 <LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetRS
-<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MCXMode
 <LI><a href="#[22f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Motor_init
 <LI><a href="#[138]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Att_Algo_Init
 <LI><a href="#[2fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;trace_line_init
@@ -5506,7 +5504,7 @@ Global Symbols
 <LI><a href="#[2d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;icm20602_self_check
 </UL>
 
-<P><STRONG><a name="[f6]"></a>trace_line_entry</STRONG> (Thumb, 58 bytes, Stack size 8 bytes, trace_line.o(.text.trace_line_entry))
+<P><STRONG><a name="[f6]"></a>trace_line_entry</STRONG> (Thumb, 68 bytes, Stack size 8 bytes, trace_line.o(.text.trace_line_entry))
 <BR><BR>[Stack]<UL><LI>Max Depth = 2872<LI>Call Chain = trace_line_entry &rArr; Vision_Handle &rArr; Camera_PreProcess &rArr; Camera_My_Adapt_Threshold &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[26c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Vision_Handle
@@ -5844,11 +5842,8 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[1d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ClearPinsInterruptFlags
 </UL>
 
-<P><STRONG><a name="[ff]"></a>MCXMode</STRONG> (Thumb, 108 bytes, Stack size 16 bytes, debug_tool.o(.text.MCXMode))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = MCXMode &rArr; rt_kprintf &rArr; rt_hw_console_output &rArr; uart_write_byte &rArr; LPUART_WriteByte
-</UL>
-<BR>[Calls]<UL><LI><a href="#[21f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MCX_Change_Mode
-<LI><a href="#[139]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_kprintf
+<P><STRONG><a name="[ff]"></a>MCXMode</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, debug_tool.o(.text.MCXMode))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = MCXMode
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> debug_tool.o(FSymTab)
 </UL>

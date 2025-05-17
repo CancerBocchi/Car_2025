@@ -1027,7 +1027,7 @@ void Vision_CirculeCor_Handle(){
 void Vision_CirculeOut_Handle(){
 
     Circule_Handle.anti_cir_broder[0] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 7:180;
-    Circule_Handle.anti_cir_broder[69] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 180:7;
+    Circule_Handle.anti_cir_broder[69] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 180:10;
 
     Vision_set_AdditionalLine(0,69,Circule_Handle.anti_cir_broder);       
     Vision_SetLose(Circule_Handle.circule_broder,0,69);

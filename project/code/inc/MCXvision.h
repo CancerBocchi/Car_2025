@@ -7,8 +7,7 @@
 #define BUFFER_TAIL 0xFF
 #define MCX_Detection_Mode  ('D')
 #define MCX_Reset_Mode      ('R')
-#define MCX_Location_Mode   ('L')
-#define MCX_Put_Mode        ('F')
+
 
 #define MCX_UART 			UART_3
 #define MCX_UART_RX		UART3_RX_B23
