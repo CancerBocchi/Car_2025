@@ -135,5 +135,5 @@ void MCX_UART_Init(void)
 
 	MCX_Detection_Flag = 0;
 
-	MCX_Change_Mode(MCX_Reset_Mode);
+	MCX_Change_Mode(MCX_Detection_Mode);
 }

@@ -50,18 +50,13 @@ MSH_CMD_EXPORT(ClassState , View Class Meg);
  * 改变MCX的模式
 */
 static void MCXMode(int argc, char**argv){
-	if(argc<3 && *argv[1] == MCX_Location_Mode || 
-        *argv[1] == MCX_Reset_Mode || *argv[1] == MCX_Put_Mode
-        ||*argv[1] == MCX_Detection_Mode){
-            MCX_Change_Mode(*argv[1]);
-            rt_kprintf("MCX:Mode Changed %c\n",*argv[1]);
-    }
+
 }
 MSH_CMD_EXPORT(MCXMode , chang MCX Mode);
 
 /**
  * @brief 车辆启动
- *       
+ * 
  * 
 */
 static void  CarStart(){

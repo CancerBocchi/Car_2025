@@ -34,6 +34,7 @@ int main()
 	car_motion_Init();
 	buzzer_init();
 	Camera_and_Screen_Init();
+	MCX_UART_Init();
 	
 	rt_kprintf("---------- task init ----------\n");
 	trace_line_init();
