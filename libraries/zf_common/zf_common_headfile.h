@@ -142,12 +142,10 @@
 #include "buzzer.h"
 #include "MCXvision.h"
 #include "my_vision.h"
-#include "locate_picture.h"
-#include "circule_handle.h"
+#include "locate_box.h"
 #include "classify.h"
 #include "art.h"
 #include "final.h"
-#include "cross_handle.h"
 #include "button.h"
 //===================================================用户自定义文件===================================================
 

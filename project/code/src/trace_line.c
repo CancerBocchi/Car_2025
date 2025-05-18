@@ -13,11 +13,11 @@
 //  @data 数据部分
 //-------------------------------------------------------------------------------------------------------------------
 //线程控制块
-rt_thread_t trace_line_thread;
+rt_thread_t 	trace_line_thread;
 //信号量控制块
 rt_sem_t 		trace_line_sem;
 //原始图像
-uint8 frame[MT9V03X_W][MT9V03X_H];
+uint8 			frame[MT9V03X_W][MT9V03X_H];
 
 //PID控制块
 Pos_PID_t TraceLine_Yaw_Con;
@@ -138,6 +138,7 @@ void trace_line_entry()
 		{	
 			Vision_Handle();
 			trace_line_method();
+			mt9v03x_finish_flag = 0;
 		}
 		rt_thread_delay(1);
 
