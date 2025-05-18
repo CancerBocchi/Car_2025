@@ -19,6 +19,7 @@ struct{
 
 /**
  * @brief 定位测试函数
+ * 			定位环路：纵向使用面积作为反馈量，左右使用角速度作为返回量控制车辆载屏幕中心
  * 
  */
 void locate_test(){
@@ -28,9 +29,7 @@ void locate_test(){
 
 	while(1){
 		if(MCX_rx_flag){
-			Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),
-						Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),0);
-						//
+			Car_Change_Speed(0,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 			MCX_rx_flag = 0;
 		}
 		rt_thread_delay(1);
@@ -48,34 +47,34 @@ void direction_correction_test(){
 	//abs(center_x - 127)<5
 	while(1){
 		if(MCX_rx_flag){
-			Car_Change_Speed(0,0,Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+			Car_Change_Speed(0,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 			MCX_rx_flag = 0;
 		}
 		rt_thread_delay(1);
 	}
 
-	// while(1){
-	// 	if(mt9v03x_finish_flag){
+	while(1){
+		if(mt9v03x_finish_flag){
 
-	// 		Camera_FindMidLine();
-	// 		//获取中线
-	// 		for(int i=imgRow-1;i>=0;i--)
-	// 			Image_S.MID_Table[i]=(int16)((Image_S.rightBroder[i]+Image_S.leftBroder[i])/2);
+			Camera_FindMidLine();
+			//获取中线
+			for(int i=imgRow-1;i>=0;i--)
+				Image_S.MID_Table[i]=(int16)((Image_S.rightBroder[i]+Image_S.leftBroder[i])/2);
 
-	// 		//截取部分中线的平均值（主要是远处部分）
-	// 		int aver_error;
-	// 		for(int i = 0; i<=69-20;i++)
-	// 			aver_error += (imgCol/2 - Image_S.MID_Table[i])/imgRow*2;
+			//截取部分中线的平均值（主要是远处部分）
+			int aver_error;
+			for(int i = 0; i<=69-20;i++)
+				aver_error += (imgCol/2 - Image_S.MID_Table[i])/imgRow*2;
 
-	// 		//控制环路
-	// 		Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),
-	// 						Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),
-	// 						Pos_PID_Controller(&locate_box_data.Dir_pid,aver_error));	
-	// 		mt9v03x_finish_flag = 0;
-	// 	}
-	// 	rt_thread_delay(1);
+			//控制环路
+			Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),
+							Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),
+							Pos_PID_Controller(&locate_box_data.Dir_pid,aver_error));	
+			mt9v03x_finish_flag = 0;
+		}
+		rt_thread_delay(1);
 		
-	// }
+	}
 
 }
 
