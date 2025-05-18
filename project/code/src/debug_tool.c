@@ -198,7 +198,7 @@ static int arg_count;
 //×¢²á±í
 arg_change arg_register[] = {
 		{"Yaw",DEBUG_FLOAT,&(Car_Yaw_Controller.Ref)},
-        {"Vy",DEBUG_FLOAT,&(speed_forward)},
+    {"Vy",DEBUG_FLOAT,&(speed_forward)},
 		{"VxKp",DEBUG_FLOAT,&(TraceLine_Vx_Con.Kp)},
 		{"VxKi",DEBUG_FLOAT,&(TraceLine_Vx_Con.Ki)},
 		{"YawKp",DEBUG_FLOAT,&(TraceLine_Yaw_Con.Kp)},
@@ -208,14 +208,6 @@ arg_change arg_register[] = {
 		{"AngleKd",DEBUG_FLOAT,&(Car_Yaw_Controller.Kd)},
 		{"adPara",DEBUG_INT,&(adaptivePara)},
 		{"Car_Switch",DEBUG_INT,&(Car_BootSwitch)}, 
-		{"LoVxKp",DEBUG_FLOAT,&(center_x_con.Kp)},
-		{"LoVyKp",DEBUG_FLOAT,&(center_y_con.Kp)},
-
-		{"xv",DEBUG_FLOAT,&(center_x_con.Ref)},
-		{"yv",DEBUG_FLOAT,&(center_y_con.Ref)},
-		{"catch_flag",DEBUG_INT,&locate_catch_flag},
-		{"put_flag",DEBUG_INT,&locate_put_flag},
-		{"loc_arr",DEBUG_INT,&locate_arr_flag},
 		{"ex_time",DEBUG_INT,&exposure_time},
 		{NULL,NULL,NULL}
 };

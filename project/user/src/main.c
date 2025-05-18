@@ -37,7 +37,9 @@ int main()
 	MCX_UART_Init();
 	
 	rt_kprintf("---------- task init ----------\n");
+	locate_box_init();
 	trace_line_init();
+
 
 	rt_kprintf("--------- init end ----------\n");
 

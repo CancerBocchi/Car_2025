@@ -1,10 +1,12 @@
-./objects/zf_common_debug.o: ..\..\libraries\zf_common\zf_common_debug.c \
-  ..\..\libraries\sdk\drives\fsl_pwm.h \
+./objects/locate_box.o: ..\code\src\locate_box.c ..\code\inc\locate_box.h \
+  ..\..\libraries\zf_common\zf_common_headfile.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\math.h \
   ..\..\libraries\sdk\drives\fsl_common.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\assert.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stddef.h \
   ..\..\libraries\sdk\deceive\fsl_device_registers.h \
@@ -20,40 +22,37 @@
   ..\..\libraries\sdk\deceive\MIMXRT1064_features.h \
   ..\..\libraries\sdk\drives\fsl_common_arm.h \
   ..\..\libraries\sdk\drives\fsl_clock.h \
-  ..\..\libraries\zf_common\zf_common_fifo.h \
-  ..\..\libraries\zf_common\zf_common_typedef.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h \
-  ..\..\libraries\zf_common\zf_common_interrupt.h \
-  ..\..\libraries\zf_driver\zf_driver_gpio.h \
-  ..\..\libraries\sdk\drives\fsl_gpio.h \
-  ..\..\libraries\zf_driver\zf_driver_pwm.h \
-  ..\..\libraries\zf_driver\zf_driver_uart.h \
-  ..\..\libraries\sdk\drives\fsl_lpuart.h \
-  ..\..\libraries\zf_common\zf_common_debug.h \
-  ..\..\libraries\zf_common\zf_common_headfile.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\math.h \
   ..\..\libraries\sdk\utilities\debug_console\fsl_debug_console.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h \
   ..\..\libraries\sdk\drives\fsl_iomuxc.h \
   ..\..\libraries\sdk\drives\fsl_cache.h \
   ..\..\libraries\sdk\drives\fsl_csi.h \
+  ..\..\libraries\zf_common\zf_common_typedef.h \
   ..\..\libraries\zf_common\zf_common_clock.h \
+  ..\..\libraries\zf_common\zf_common_debug.h \
+  ..\..\libraries\zf_common\zf_common_fifo.h \
   ..\..\libraries\zf_common\zf_common_font.h \
   ..\..\libraries\zf_common\zf_common_function.h \
+  ..\..\libraries\zf_common\zf_common_interrupt.h \
   ..\..\libraries\zf_common\zf_common_vector.h \
   ..\..\libraries\zf_driver\zf_driver_adc.h \
   ..\..\libraries\zf_driver\zf_driver_delay.h \
   ..\..\libraries\zf_driver\zf_driver_encoder.h \
   ..\..\libraries\zf_driver\zf_driver_exti.h \
+  ..\..\libraries\zf_driver\zf_driver_gpio.h \
+  ..\..\libraries\sdk\drives\fsl_gpio.h \
   ..\..\libraries\zf_driver\zf_driver_flash.h \
   ..\..\libraries\zf_driver\zf_driver_iic.h \
   ..\..\libraries\zf_driver\zf_driver_pit.h \
   ..\..\libraries\sdk\drives\fsl_pit.h \
+  ..\..\libraries\zf_driver\zf_driver_pwm.h \
   ..\..\libraries\zf_driver\zf_driver_sdio.h \
   ..\..\libraries\zf_driver\zf_driver_soft_iic.h \
   ..\..\libraries\zf_driver\zf_driver_soft_spi.h \
   ..\..\libraries\zf_driver\zf_driver_spi.h \
   ..\..\libraries\zf_driver\zf_driver_timer.h \
+  ..\..\libraries\zf_driver\zf_driver_uart.h \
+  ..\..\libraries\sdk\drives\fsl_lpuart.h \
   ..\..\libraries\zf_driver\zf_driver_csi.h \
   ..\..\libraries\zf_driver\zf_driver_romapi.h \
   ..\..\libraries\sdk\xip\EVKMIMXRT1064_FLEXSPI_NOR_CONFIG.h \
@@ -139,6 +138,5 @@
   ..\code\inc\car.h ..\code\inc\trace_line.h ..\mdk\camera.h \
   ..\user\inc\user_math.h ..\code\inc\step_motor.h \
   ..\code\inc\system_perform.h ..\code\inc\buzzer.h \
-  ..\code\inc\MCXvision.h ..\code\inc\my_vision.h \
-  ..\code\inc\locate_box.h ..\code\inc\classify.h ..\code\inc\art.h \
-  ..\code\inc\final.h ..\code\inc\button.h
+  ..\code\inc\MCXvision.h ..\code\inc\my_vision.h ..\code\inc\classify.h \
+  ..\code\inc\art.h ..\code\inc\final.h ..\code\inc\button.h
