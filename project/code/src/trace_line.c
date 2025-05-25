@@ -144,9 +144,12 @@ void trace_line_entry()
 
 
 		if(MCX_Detection_Flag){
+			rt_kprintf("trace_line:get into push box task\n");
 			Car_Change_Speed(0,0,0);
+			rt_thread_delay(500);
 			rt_sem_release(locate_box_sem);
 			rt_sem_take(trace_line_sem,RT_WAITING_FOREVER);
+			rt_kprintf("trace_line:return to trace line task\n");
 			MCX_Detection_Flag = 0;
 		}
 		//状态切换管理 若art模块发出了识别到图片的信号，则阻塞该线程，运行边沿检测线程

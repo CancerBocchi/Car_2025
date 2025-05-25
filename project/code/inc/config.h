@@ -26,7 +26,7 @@
  * @brief 电机�?起动斜率
  *          
  */
-#define MOTOR_SOFTBOOT_RATE 100.0f
+#define MOTOR_SOFTBOOT_RATE 75.0f
 
 /**
  * @brief MOTOR PWM 通道函数

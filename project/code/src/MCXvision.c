@@ -99,7 +99,7 @@ void MCX_uart_handle(){
 
 		case Detection_Mode:
 			if(MCX_rx_buffer[1] != 0){
-				center_x = MCX_rx_buffer[2];
+				center_x = (MCX_rx_buffer[1]==1)?(MCX_rx_buffer[2]):(-(int16_t)MCX_rx_buffer[2]);
 				center_y = MCX_rx_buffer[3];
 				MCX_Detection_Flag = 1;
 			}
