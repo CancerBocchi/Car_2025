@@ -18,7 +18,7 @@ struct{
 }locate_box_data;
 
 /**
- * @brief 定位测试函数
+ * @brief 使用扫线进行校准
  * 
  */
 void locate_test(){
@@ -27,13 +27,25 @@ void locate_test(){
 	// Car_Rotate(0);//控制住车的方向
 
 	while(1){
-		if(MCX_rx_flag){
-			Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),
-						Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),0);
-						//
-			MCX_rx_flag = 0;
+		if(mt9v03x_finish_flag){
+
+			Camera_FindMidLine();
+			//获取中线
+			for(int i=imgRow-1;i>=0;i--)
+				Image_S.MID_Table[i]=(int16)((Image_S.rightBroder[i]+Image_S.leftBroder[i])/2);
+
+			//截取部分中线的平均值（主要是远处部分）
+			int aver_error;
+			for(int i = 0; i<=69-20;i++)
+				aver_error += (imgCol/2 - Image_S.MID_Table[i])/imgRow*2;
+
+			//控制环路
+			Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,aver_error),0,Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+
+			mt9v03x_finish_flag = 0;
 		}
 		rt_thread_delay(1);
+		
 	}
 
 }
@@ -74,29 +86,29 @@ void direction_correction_test(){
 
 			case Location_Correct_State:
 				Car_Change_Speed(180,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
-				// if(fabs(Att_GetYaw() - init_angle)>=90){
-				// 	angle_state = Push_Box_State;
-				// 	Car_Change_Speed(0,0,0);
-				// 	rt_thread_delay(200);
-				// 	Car_Rotate(0);
-				// }
+				if(fabs(Att_CurrentYaw - init_angle)>=90){
+					angle_state = Push_Box_State;
+					Car_Change_Speed(0,0,0);
+					rt_thread_delay(200);
+					Car_Rotate(0);
+				}
 				break;
 
 			case Push_Box_State:
 				Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),0);
-				// if(abs(center_x - X_CON_REF)<=4){
-				// 	Car_Change_Speed(0,0,0);
-				// 	rt_thread_delay(100);
-				// 	Car_DistanceMotion(0,60,1.5);
-				// 	Car_DistanceMotion(0,-30,1.5);
+				if(abs(center_x - X_CON_REF)<=4){
+					Car_Change_Speed(0,0,0);
+					rt_thread_delay(100);
+					Car_DistanceMotion(0,60,1.5);
+					Car_DistanceMotion(0,-30,1.5);
 
-				// 	Car_Change_Yaw(init_angle);
-				// 	rt_thread_delay(500);
-				// 	MCX_Change_Mode(MCX_Detection_Mode);
-				// 	Car_Speed_ConRight = Con_By_TraceLine;
-				// 	finish_flag = 1;
+					Car_Change_Yaw(init_angle);
+					rt_thread_delay(500);
+					MCX_Change_Mode(MCX_Detection_Mode);
+					Car_Speed_ConRight = Con_By_TraceLine;
+					finish_flag = 1;
 
-				// }
+				}
 				break;
 			
 			default:
@@ -111,28 +123,7 @@ void direction_correction_test(){
 		rt_thread_delay(1);
 	}
 
-	// while(1){
-	// 	if(mt9v03x_finish_flag){
 
-	// 		Camera_FindMidLine();
-	// 		//获取中线
-	// 		for(int i=imgRow-1;i>=0;i--)
-	// 			Image_S.MID_Table[i]=(int16)((Image_S.rightBroder[i]+Image_S.leftBroder[i])/2);
-
-	// 		//截取部分中线的平均值（主要是远处部分）
-	// 		int aver_error;
-	// 		for(int i = 0; i<=69-20;i++)
-	// 			aver_error += (imgCol/2 - Image_S.MID_Table[i])/imgRow*2;
-
-	// 		//控制环路
-	// 		Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),
-	// 						Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),
-	// 						Pos_PID_Controller(&locate_box_data.Dir_pid,aver_error));	
-	// 		mt9v03x_finish_flag = 0;
-	// 	}
-	// 	rt_thread_delay(1);
-		
-	// }
 
 }
 
