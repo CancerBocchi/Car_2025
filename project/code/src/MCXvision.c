@@ -91,6 +91,7 @@ void MCX_Change_Mode(uint8_t mode){
  * 
  */
 void MCX_uart_handle(){
+	static int last_x = 0;
 	switch (mcxCurrent_Mode)
 	{
 		case Reset_Mode:
@@ -101,8 +102,20 @@ void MCX_uart_handle(){
 			if(MCX_rx_buffer[1] != 0){
 				center_x = (MCX_rx_buffer[1]==1)?(MCX_rx_buffer[2]):(-(int16_t)MCX_rx_buffer[2]);
 				center_y = MCX_rx_buffer[3];
+				mcxCurrent_Mode = Location_Mode;
 				MCX_Detection_Flag = 1;
 			}
+		break;
+
+		case Location_Mode:
+			if(MCX_rx_buffer[1] != 0){		
+				center_x = (MCX_rx_buffer[1]==1)?(MCX_rx_buffer[2]):(-(int16_t)MCX_rx_buffer[2]);
+				last_x = center_x;
+				center_y = MCX_rx_buffer[3];
+			}
+			else 
+				center_x = last_x;
+
 		break;
 	}
 	MCX_rx_flag = 1;
