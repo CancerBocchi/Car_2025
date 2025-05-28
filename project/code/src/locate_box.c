@@ -17,11 +17,7 @@ struct{
 
 }locate_box_data;
 
-/**
- * @brief 使用扫线进行校准
- * 
- */
-void locate_test(){
+void test2(){
 
 	Car_Start();
 	// Car_Rotate(0);//控制住车的方向
@@ -79,6 +75,40 @@ void locate_test(){
 			aver_error = error;
 			Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Dir_pid,aver_error),0,Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 			error = 0;
+
+			mt9v03x_finish_flag = 0;
+		}
+		rt_thread_delay(1);
+		
+	}
+
+
+}
+
+/**
+ * @brief   角度控制箱子在中间，横向移动控制扫线在中间
+ * 
+ */
+void test1(){
+
+	Car_Start();
+	// Car_Rotate(0);//控制住车的方向
+
+	while(1){
+		if(mt9v03x_finish_flag){
+			Camera_PreProcess();
+			Camera_FindMidLine();
+			//获取中线
+			for(int i=imgRow-1;i>=0;i--)
+				Image_S.MID_Table[i]=(int16)((Image_S.rightBroder[i]+Image_S.leftBroder[i])/2);
+
+			//截取部分中线的平均值（主要是远处部分）
+			int aver_error;
+			for(int i = 0; i<=69-20;i++)
+				aver_error += (imgCol/2 - Image_S.MID_Table[i])/imgRow*2;
+
+			//控制环路
+			Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,aver_error),0,Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 
 			mt9v03x_finish_flag = 0;
 		}

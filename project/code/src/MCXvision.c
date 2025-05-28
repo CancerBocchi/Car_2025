@@ -91,7 +91,7 @@ void MCX_Change_Mode(uint8_t mode){
  * 
  */
 void MCX_uart_handle(){
-	static int last_x = 0;
+	static int last_x;
 	switch (mcxCurrent_Mode)
 	{
 		case Reset_Mode:
