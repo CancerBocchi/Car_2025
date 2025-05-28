@@ -27,54 +27,18 @@ void test2(){
 			Camera_PreProcess();
 			Camera_FindMidLine();
 			
-			Vision_Draw();
-
 			//获取中线
 			for(int i=imgRow-1;i>=0;i--)
 				Image_S.MID_Table[i]=(int16)((Image_S.rightBroder[i]+Image_S.leftBroder[i])/2);
 
-			int16 MID_Table[imgRow];
-			int16 leftBroder[imgRow];//左边边界
-			int16 rightBroder[imgRow];//右边边界
-			for(int i=imgRow-1;i>=0;i--){
-				MID_Table[i] = Image_S.MID_Table[i];
-				leftBroder[i] = Image_S.leftBroder[i];
-				rightBroder[i] = Image_S.rightBroder[i];
-			}
+			Vision_Draw();
 
-			for(int i=imgRow-1;i>0;i--)
-			{
-				if(MID_Table[i]>=188)
-					MID_Table[i] = 187;
-					MID_Table[i] = MID_Table[i]<0? 0:MID_Table[i];
-
-				if(leftBroder[i]>=188)
-					leftBroder[i] = 187;
-					leftBroder[i] = leftBroder[i]<0? 0:leftBroder[i];
-
-				if(rightBroder[i]>=188)
-					rightBroder[i] = 187;
-					rightBroder[i] = rightBroder[i]<0? 0:rightBroder[i]; 
-							
-				ips200_draw_point(MID_Table[i], i, RGB565_RED);
-				ips200_draw_point(leftBroder[i], i, RGB565_BLUE);
-				ips200_draw_point(rightBroder[i], i, RGB565_BROWN);
-				//中线
-				ips200_draw_point((int)(94), i, RGB565_GREEN);
-			}
-
-
-
-			//截取部分中线的平均值?
+			//截取部分中线的斜率平均值
 			float aver_error;
-			float error;
-			for(int i = 69-10; i<=69;i++)
-				error = error + (imgCol/2 - Image_S.MID_Table[i])/10.0f;
-
-			//控制环路
-			aver_error = error;
-			Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Dir_pid,aver_error),0,Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
-			error = 0;
+			aver_error  = Line_GetAverK(Image_S.MID_Table,69,69-10);
+			//控制平均斜率为0
+			Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Dir_pid,aver_error),0,
+							 Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 
 			mt9v03x_finish_flag = 0;
 		}
@@ -164,19 +128,27 @@ void direction_correction_test(){
 
 			case Push_Box_State:
 				Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),0);
-				// if(abs(center_x - X_CON_REF)<=4){
-				// 	Car_Change_Speed(0,0,0);
-				// 	rt_thread_delay(100);
-				// 	Car_DistanceMotion(0,60,1.5);
-				// 	Car_DistanceMotion(0,-30,1.5);
+				if(abs(center_x - X_CON_REF)<=4){
+					Car_Change_Speed(0,0,0);
+					rt_thread_delay(100);
+					// Car_DistanceMotion(0,60,1.5);
+					// Car_DistanceMotion(0,-30,1.5);
 
-				// 	Car_Change_Yaw(init_angle);
-				// 	rt_thread_delay(500);
-				// 	MCX_Change_Mode(MCX_Detection_Mode);
-				// 	Car_Speed_ConRight = Con_By_TraceLine;
-				// 	finish_flag = 1;
+					Car_Change_Speed(0,200,0);
+					while(!gpio_get_level(C6));
+					while(gpio_get_level(C6));
 
-				// }
+					Car_Change_Speed(0,0,0);
+					while(1);
+
+
+					Car_Change_Yaw(init_angle);
+					rt_thread_delay(500);
+					MCX_Change_Mode(MCX_Detection_Mode);
+					Car_Speed_ConRight = Con_By_TraceLine;
+					finish_flag = 1;
+
+				}
 				break;
 			
 			default:

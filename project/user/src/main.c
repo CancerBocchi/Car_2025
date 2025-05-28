@@ -27,6 +27,7 @@ int main()
 	
 	gpio_init(C3,GPO,0,GPO_PUSH_PULL);
 	
+	
 	rt_kprintf("\nSystem_Init:\n");
 
 	rt_kprintf("----------  Basic Hardware Init ----------\n");

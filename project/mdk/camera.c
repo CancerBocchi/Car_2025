@@ -19,17 +19,32 @@ void Vision_Handle()
     //Í¼ÏñÔ¤´¦Àí
     Camera_PreProcess();
 
-    Camera_FindMidLine();   //³£¹æÉ¨Ïß
+    Camera_FindMyLine();   //³£¹æÉ¨Ïß
     // Camera_LongestWight();  //×îÔ¶ÏßÑ²Ïß    
     Vision_SymbolJudge();   //ÔªËØÅÐ¶Ï£¬µ«ÊÇ»áÓÐÎÊÌâ	
     Vision_RSHandle();      //ÔªËØÅÐ¶ÏµÄ½â¾ö·½Ê½
-
-    Vision_Draw();
    //»ñÈ¡ÖÐÏß
     for(int i=imgRow-1;i>=0;i--)
-    {
         Image_S.MID_Table[i]=(int16)((Image_S.rightBroder[i]+Image_S.leftBroder[i])/2);
-    } 
+
+    Vision_Draw();
+    
+    
+    //Vision_DrawFP();
+        //×î³¤°×Ïß·¨
+    // ips200_draw_line(Longest_White_Column_Right[1],78-(imgRow-1),Longest_White_Column_Right[1],78-(imgRow-1)+Longest_White_Column_Right[0],RGB565_RED);
+    // ips200_draw_line(Longest_White_Column_Left[1],78-(imgRow-1),Longest_White_Column_Left[1],78-(imgRow-1)+Longest_White_Column_Left[0],RGB565_RED);
+    // ips200_draw_line(Center,78-(imgRow-1),Center,78-(imgRow-1)+Longest_White_Column_Left[0],RGB565_RED);
+
+}
+/**
+ * @brief ´òÓ¡Í¼ÏñÔÚÆÁÄ»ÉÏ °üÀ¨±ß½çºÍÖÐÏß
+ * 
+ */
+void Vision_Draw(){
+    ips200_show_gray_image(0, 0, (const uint8 *)my_image, imgCol, imgRow, 188, 70, 0);
+    ips200_show_gray_image(0, 100, (const uint8 *)my_image_BW, imgCol, imgRow, 188, 70, 0);
+    
     int16 MID_Table[imgRow];
     int16 leftBroder[imgRow];//×ó±ß±ß½ç
     int16 rightBroder[imgRow];//ÓÒ±ß±ß½ç
@@ -63,21 +78,6 @@ void Vision_Handle()
 
     ips200_draw_line(46,0,46,69,RGB565_CYAN);
     ips200_draw_line(140,0,140,69,RGB565_CYAN);
-
-    
-    
-    Vision_DrawFP();
-        //×î³¤°×Ïß·¨
-    // ips200_draw_line(Longest_White_Column_Right[1],78-(imgRow-1),Longest_White_Column_Right[1],78-(imgRow-1)+Longest_White_Column_Right[0],RGB565_RED);
-    // ips200_draw_line(Longest_White_Column_Left[1],78-(imgRow-1),Longest_White_Column_Left[1],78-(imgRow-1)+Longest_White_Column_Left[0],RGB565_RED);
-    // ips200_draw_line(Center,78-(imgRow-1),Center,78-(imgRow-1)+Longest_White_Column_Left[0],RGB565_RED);
-
-}
-
-void Vision_Draw(){
-    ips200_show_gray_image(0, 0, (const uint8 *)my_image, imgCol, imgRow, 188, 70, 0);
-    ips200_show_gray_image(0, 100, (const uint8 *)my_image_BW, imgCol, imgRow, 188, 70, 0);
-
 }
 
 /**
@@ -185,7 +185,7 @@ int Camera_My_Adapt_Threshold(uint8*image,uint16 width, uint16 height)   //´ó½òË
  * 
  */
 #define range_line 10 //É¨Ïß·¶Î§
-void Camera_FindMidLine()
+void Camera_FindMyLine()
 {
     int16 Target_point = 0;
     int16 Limit_Broder[3];

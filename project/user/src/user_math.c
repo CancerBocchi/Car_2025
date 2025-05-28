@@ -251,3 +251,23 @@ uint8_t Tool_IsMultiple(float target,float multiple,float delta){
 	return (fabs(target - multiple)<delta||fabs(target)<delta)? 1 : 0 ;
 
 }
+
+/**
+ * @brief 计算一条曲线的平均斜率
+ * 
+ * @param broder 边界
+ * @param x1 坐标边界1
+ * @param x2 坐标边界2
+ * @return float 平均斜率
+ */
+float Line_GetAverK(int16_t* broder,int x1,int x2){
+    int min = Tool_CmpMin(x1,x2);
+    int max = Tool_CmpMax(x1,x2);
+    float aver_k = 0;
+
+    for(int i = min;i<max;i++){
+        aver_k += (int16_t)Line_CalK(((point_t){i,broder[i]}),((point_t){i+1,broder[i+1]}));
+    }
+
+    return aver_k/(max - min);
+}

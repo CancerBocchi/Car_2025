@@ -44,7 +44,7 @@ void Camera_LongestWight();
 //预处理
 void Camera_PreProcess(void);
 //八领域寻线
-void Camera_FindMidLine(void);
+void Camera_FindMyLine(void);
 //大津法
 int Camera_My_Adapt_Threshold(uint8*image,uint16 width, uint16 height);
 //初始化摄像头硬件
