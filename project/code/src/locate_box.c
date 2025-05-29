@@ -17,7 +17,74 @@ struct{
 
 }locate_box_data;
 
-void test2(){
+
+/**
+ * @brief 判断箱子是否在中间
+ * 
+ * @return uint8_t 1可以推 0不可以推
+ */
+#define SIDE_WIDTH		(int)(20)
+#define SIDE_HEIGHT		(int)(20)
+#define TOP_WIDTH		(int)(60)
+#define TOP_HEIGHT 		(int)(20)
+
+#define SIDE_RATE_THD	0.05f
+#define TOP_RATE_THD	0.95f
+
+uint8_t PushBox_IsDirectionCorrect(void){
+	float left_black_rate = Vision_CalBlackRate(my_image_BW, 0,69,0+SIDE_WIDTH,69-SIDE_HEIGHT);
+	float right_black_rate = Vision_CalBlackRate(my_image_BW, 187,69,187-SIDE_WIDTH,69-SIDE_HEIGHT);
+	float top_black_rate = Vision_CalBlackRate(my_image_BW, 93-TOP_WIDTH/2,TOP_HEIGHT,94+TOP_WIDTH/2,0);
+
+	(left_black_rate < SIDE_RATE_THD && 
+	 right_black_rate < SIDE_RATE_THD && 
+	 top_black_rate > TOP_RATE_THD)?return 1:return 0;
+}
+
+/**
+ * @brief 通过色块来判断是否应该推
+ * 
+ */
+void test_RotateTo_Cor(){
+
+	Car_Start();
+	// Car_Rotate(0);//控制住车的方向
+
+	while(1){
+		uint8_t ShouldPush = 0;
+		if(mt9v03x_finish_flag){
+			Camera_PreProcess();
+			Camera_FindMidLine();
+			
+			//获取中线
+			for(int i=imgRow-1;i>=0;i--)
+				Image_S.MID_Table[i]=(int16)((Image_S.rightBroder[i]+Image_S.leftBroder[i])/2);
+
+			Vision_Draw();
+			
+			ShouldPush = PushBox_IsDirectionCorrect();
+		}
+
+		if(MCX_rx_flag){
+
+			if(ShouldPush)
+				Car_Change_Speed(200,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+			
+			else
+				Car_Change_Speed(0,0,0);
+
+				
+
+			MCX_rx_flag = 0;
+		}
+	}
+}
+
+/**
+ * @brief   使用中线斜率来空
+ * 
+ */
+void test_midK_Cor(){
 
 	Car_Start();
 	// Car_Rotate(0);//控制住车的方向
@@ -46,39 +113,6 @@ void test2(){
 		
 	}
 
-
-}
-
-/**
- * @brief   角度控制箱子在中间，横向移动控制扫线在中间
- * 
- */
-void test1(){
-
-	Car_Start();
-	// Car_Rotate(0);//控制住车的方向
-
-	while(1){
-		if(mt9v03x_finish_flag){
-			Camera_PreProcess();
-			Camera_FindMidLine();
-			//获取中线
-			for(int i=imgRow-1;i>=0;i--)
-				Image_S.MID_Table[i]=(int16)((Image_S.rightBroder[i]+Image_S.leftBroder[i])/2);
-
-			//截取部分中线的平均值（主要是远处部分）
-			int aver_error;
-			for(int i = 0; i<=69-20;i++)
-				aver_error += (imgCol/2 - Image_S.MID_Table[i])/imgRow*2;
-
-			//控制环路
-			Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,aver_error),0,Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
-
-			mt9v03x_finish_flag = 0;
-		}
-		rt_thread_delay(1);
-		
-	}
 
 }
 
@@ -174,7 +208,6 @@ void direction_correction_test(){
 void locate_box_debug(){
 	
 	//direction_correction_test();
-	locate_test();
 	
 }
 

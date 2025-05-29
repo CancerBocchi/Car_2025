@@ -1130,4 +1130,30 @@ void Vision_ZebraHandle(){
 
 }
 
+/**
+ * @brief 计算黑点比例
+ * 
+ * @param img_bwp 灰度数组
+ * @param x1 第一个x坐标
+ * @param y1 第一个y坐标
+ * @param x2 第二个x坐标
+ * @param y2 第二个y坐标
+ * @return float 黑色像素占比
+ */
+float Vision_CalBlackRate(uint8 img_bwp[imgRow][imgCol],int x1,int y1,int x2,int y2){
+    int black = 0;
+    int max_x = Tool_CmpMax(x1,x2);
+    int min_x = Tool_CmpMin(x1,x2);
+    int max_y = Tool_CmpMax(y1,y2);
+    int min_y = Tool_CmpMin(y1,y2);
+
+    for(int i = min_x;i<=max_x;i++){
+        for(int j = min_y;j<=max_y;j++){
+            if(img_bwp[i][j] == 0)
+                black++;
+        }
+    }
+    return (float)black/((x2-x1+1)*(y2-y1+1));
+
+}
 

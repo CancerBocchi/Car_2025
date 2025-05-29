@@ -109,6 +109,8 @@ void Vision_CornerHandle();
 void Vision_ZebraHandle();
 //打印特征点
 void Vision_DrawFP();
+//计算一个矩形区域的黑色比例
+float Vision_CalBlackRate(uint8 **img_bwp,int x1,int y1,int x2,int y2);
 
 uint8_t Vision_IsZebra();
 
