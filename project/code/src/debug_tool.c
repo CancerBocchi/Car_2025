@@ -197,19 +197,19 @@ static int arg_count;
 
 //×¢²á±í
 arg_change arg_register[] = {
-		{"Yaw",DEBUG_FLOAT,&(Car_Yaw_Controller.Ref)},
+    {"Yaw",DEBUG_FLOAT,&(Car_Yaw_Controller.Ref)},
     {"Vy",DEBUG_FLOAT,&(speed_forward)},
-		{"VxKp",DEBUG_FLOAT,&(TraceLine_Vx_Con.Kp)},
-		{"VxKi",DEBUG_FLOAT,&(TraceLine_Vx_Con.Ki)},
-		{"YawKp",DEBUG_FLOAT,&(TraceLine_Yaw_Con.Kp)},
-		{"YawKi",DEBUG_FLOAT,&(TraceLine_Yaw_Con.Ki)},
-		{"YawKd",DEBUG_FLOAT,&(TraceLine_Yaw_Con.Kd)},
-		{"AngleKp",DEBUG_FLOAT,&(Car_Yaw_Controller.Kp)},
-		{"AngleKd",DEBUG_FLOAT,&(Car_Yaw_Controller.Kd)},
-		{"adPara",DEBUG_INT,&(adaptivePara)},
-		{"Car_Switch",DEBUG_INT,&(Car_BootSwitch)}, 
-		{"ex_time",DEBUG_INT,&exposure_time},
-		{NULL,NULL,NULL}
+    {"VxKp",DEBUG_FLOAT,&(TraceLine_Vx_Con.Kp)},
+    {"VxKi",DEBUG_FLOAT,&(TraceLine_Vx_Con.Ki)},
+    {"YawKp",DEBUG_FLOAT,&(TraceLine_Yaw_Con.Kp)},
+    {"YawKi",DEBUG_FLOAT,&(TraceLine_Yaw_Con.Ki)},
+    {"YawKd",DEBUG_FLOAT,&(TraceLine_Yaw_Con.Kd)},
+    {"AngleKp",DEBUG_FLOAT,&(Car_Yaw_Controller.Kp)},
+    {"AngleKd",DEBUG_FLOAT,&(Car_Yaw_Controller.Kd)},
+    {"adPara",DEBUG_INT,&(adaptivePara)},
+    {"Car_Switch",DEBUG_INT,&(Car_BootSwitch)}, 
+    {"ex_time",DEBUG_INT,&exposure_time},
+    {NULL,NULL,NULL}
 };
 
 static void setarg(int argc, char**argv)

@@ -32,6 +32,7 @@ struct{
 #define TOP_RATE_THD	0.95f
 
 uint8_t PushBox_IsDirectionCorrect(void){
+	
 	float left_black_rate = Vision_CalBlackRate(my_image_BW, 0,69,0+SIDE_WIDTH,69-SIDE_HEIGHT);
 	float right_black_rate = Vision_CalBlackRate(my_image_BW, 187,69,187-SIDE_WIDTH,69-SIDE_HEIGHT);
 	float top_black_rate = Vision_CalBlackRate(my_image_BW, 93-TOP_WIDTH/2,TOP_HEIGHT,94+TOP_WIDTH/2,0);
@@ -67,13 +68,10 @@ void test_RotateTo_Cor(){
 
 		if(MCX_rx_flag){
 
-			if(ShouldPush)
+			if(!ShouldPush)
 				Car_Change_Speed(200,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
-			
 			else
 				Car_Change_Speed(0,0,0);
-
-				
 
 			MCX_rx_flag = 0;
 		}
@@ -169,7 +167,9 @@ void direction_correction_test(){
 					// Car_DistanceMotion(0,-30,1.5);
 
 					Car_Change_Speed(0,200,0);
+					//确保在赛道上
 					while(!gpio_get_level(C6));
+					//确保不再赛道上
 					while(gpio_get_level(C6));
 
 					Car_Change_Speed(0,0,0);
