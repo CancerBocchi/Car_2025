@@ -44,6 +44,10 @@ void Vision_Handle()
 void Vision_Draw(){
     ips200_show_gray_image(0, 0, (const uint8 *)my_image, imgCol, imgRow, 188, 70, 0);
     ips200_show_gray_image(0, 100, (const uint8 *)my_image_BW, imgCol, imgRow, 188, 70, 0);
+
+    ips200_draw_line(0,99,188,99,RGB565_RED);
+    ips200_draw_line(0,71+99,188,71+99,RGB565_RED);
+    ips200_draw_line(188,99,188,71+99,RGB565_RED);
     
     int16 MID_Table[imgRow];
     int16 leftBroder[imgRow];//×ó±ß±ß½ç

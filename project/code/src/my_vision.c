@@ -1149,11 +1149,13 @@ float Vision_CalBlackRate(uint8 img_bwp[imgRow][imgCol],int x1,int y1,int x2,int
 
     for(int i = min_x;i<=max_x;i++){
         for(int j = min_y;j<=max_y;j++){
-            if(img_bwp[i][j] == 0)
+            if(img_bwp[j][i] == 0)
                 black++;
         }
     }
-    return (float)black/((x2-x1+1)*(y2-y1+1));
+
+    int total = (max_x-min_x+1)*(max_y-min_y+1);
+    return (float)black/total;
 
 }
 

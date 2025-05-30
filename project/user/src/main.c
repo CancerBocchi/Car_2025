@@ -50,6 +50,7 @@ int main()
 	rt_thread_delay(1000);
 
 	while(1){
+
 		if(!gpio_get_level(D16)){
 			Car_Start();
 			rt_thread_delay(2000);
