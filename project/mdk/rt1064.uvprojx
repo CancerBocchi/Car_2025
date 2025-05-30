@@ -10,8 +10,8 @@
       <TargetName>nor_sdram_zf_dtcm</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pArmCC>6190000::V6.19::ARMCLANG</pArmCC>
-      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
+      <pArmCC>6210000::V6.21::ARMCLANG</pArmCC>
+      <pCCUsed>6210000::V6.21::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -441,11 +441,6 @@
               <FilePath>..\code\src\encoder.c</FilePath>
             </File>
             <File>
-              <FileName>motor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\code\src\motor.c</FilePath>
-            </File>
-            <File>
               <FileName>PID.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\code\src\PID.c</FilePath>
@@ -484,6 +479,11 @@
               <FileName>myuart.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\code\inc\myuart.h</FilePath>
+            </File>
+            <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\src\motor.c</FilePath>
             </File>
             <File>
               <FileName>PID.h</FileName>
@@ -604,6 +604,16 @@
               <FileName>locate_box.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\code\inc\locate_box.h</FilePath>
+            </File>
+            <File>
+              <FileName>button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\src\button.c</FilePath>
+            </File>
+            <File>
+              <FileName>button.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\inc\button.h</FilePath>
             </File>
           </Files>
         </Group>

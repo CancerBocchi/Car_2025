@@ -18,7 +18,7 @@ void button_init(){
 
 	if(button_thread != RT_NULL){
 		rt_kprintf("button_thread created successfully!\n");
-		rt_thread_startup(trace_line_thread);
+		rt_thread_startup(button_thread);
 	}
 	else 
 		rt_kprintf("button_thread created failed\n");

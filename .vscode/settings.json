@@ -32,7 +32,8 @@
         "zf_device_mt9v03x.h": "c",
         "string.h": "c",
         "zf_device_tft180.h": "c",
-        "locate_box.h": "c"
+        "locate_box.h": "c",
+        "user_math.h": "c"
     },
     "C_Cpp.default.compilerPath": "cl.exe",
     "C_Cpp.errorSquiggles": "disabled"

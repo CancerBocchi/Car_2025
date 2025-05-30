@@ -51,7 +51,7 @@ int16 Line_FindMinPoint(int16* broder,int x1,int x2);
 //计算平均坐标值
 int16_t Line_GetAverage(int16* broder,int x1,int x2);
 //计算平均斜率
-float Line_GetAverK(int16_t* broder,int x1,int x2)
+float Line_GetAverK(int16_t* broder,int x1,int x2);
 //判断倍数
 uint8_t Tool_IsMultiple(float target,float multiple,float delta);
 

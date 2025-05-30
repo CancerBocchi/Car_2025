@@ -1,4 +1,4 @@
-./objects/mcxvision.o: ..\code\src\MCXvision.c ..\code\inc\MCXvision.h \
+./objects/button.o: ..\code\src\button.c ..\code\inc\button.h \
   ..\..\libraries\zf_common\zf_common_headfile.h \
   C:\Keil_v5\ARM\ARMCLANG\include\stdio.h \
   C:\Keil_v5\ARM\ARMCLANG\include\stdint.h \
@@ -138,6 +138,6 @@
   ..\code\inc\car.h ..\code\inc\trace_line.h ..\mdk\camera.h \
   ..\user\inc\user_math.h ..\code\inc\step_motor.h \
   ..\code\inc\system_perform.h ..\code\inc\buzzer.h \
-  ..\code\inc\my_vision.h ..\code\inc\locate_box.h \
-  ..\code\inc\classify.h ..\code\inc\art.h ..\code\inc\final.h \
-  ..\code\inc\button.h
+  ..\code\inc\MCXvision.h ..\code\inc\my_vision.h \
+  ..\code\inc\locate_box.h ..\code\inc\classify.h ..\code\inc\art.h \
+  ..\code\inc\final.h

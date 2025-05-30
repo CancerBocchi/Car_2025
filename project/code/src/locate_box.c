@@ -36,9 +36,9 @@ uint8_t PushBox_IsDirectionCorrect(void){
 	float right_black_rate = Vision_CalBlackRate(my_image_BW, 187,69,187-SIDE_WIDTH,69-SIDE_HEIGHT);
 	float top_black_rate = Vision_CalBlackRate(my_image_BW, 93-TOP_WIDTH/2,TOP_HEIGHT,94+TOP_WIDTH/2,0);
 
-	(left_black_rate < SIDE_RATE_THD && 
-	 right_black_rate < SIDE_RATE_THD && 
-	 top_black_rate > TOP_RATE_THD)?return 1:return 0;
+	return (left_black_rate < SIDE_RATE_THD && 
+				 right_black_rate < SIDE_RATE_THD && 
+				 top_black_rate > TOP_RATE_THD)?1:0;
 }
 
 /**
@@ -54,7 +54,7 @@ void test_RotateTo_Cor(){
 		uint8_t ShouldPush = 0;
 		if(mt9v03x_finish_flag){
 			Camera_PreProcess();
-			Camera_FindMidLine();
+			Camera_FindMyLine();
 			
 			//获取中线
 			for(int i=imgRow-1;i>=0;i--)
@@ -92,7 +92,7 @@ void test_midK_Cor(){
 	while(1){
 		if(mt9v03x_finish_flag){
 			Camera_PreProcess();
-			Camera_FindMidLine();
+			Camera_FindMyLine();
 			
 			//获取中线
 			for(int i=imgRow-1;i>=0;i--)
