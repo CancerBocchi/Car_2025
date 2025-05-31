@@ -1140,16 +1140,16 @@ void Vision_ZebraHandle(){
  * @param y2 第二个y坐标
  * @return float 黑色像素占比
  */
-float Vision_CalBlackRate(uint8 img_bwp[imgRow][imgCol],int x1,int y1,int x2,int y2){
+float Vision_CalBlackRate(uint8 *img_bwp,uint16_t width,uint16_t height,point_t p1,point_t p2){
     int black = 0;
-    int max_x = Tool_CmpMax(x1,x2);
-    int min_x = Tool_CmpMin(x1,x2);
-    int max_y = Tool_CmpMax(y1,y2);
-    int min_y = Tool_CmpMin(y1,y2);
+    int max_x = Tool_CmpMax(p1.x,p2.x);
+    int min_x = Tool_CmpMin(p1.x,p2.x);
+    int max_y = Tool_CmpMax(p1.y,p2.y);
+    int min_y = Tool_CmpMin(p1.y,p2.y);
 
     for(int i = min_x;i<=max_x;i++){
         for(int j = min_y;j<=max_y;j++){
-            if(img_bwp[j][i] == 0)
+            if(img_bwp[j*width+i] == 0)
                 black++;
         }
     }
@@ -1159,3 +1159,38 @@ float Vision_CalBlackRate(uint8 img_bwp[imgRow][imgCol],int x1,int y1,int x2,int
 
 }
 
+/**
+ * @brief 计算长方形区域的左右对称性
+ * 
+ * @param img 图像指针
+ * @param width 图像宽度
+ * @param height 图像高度
+ * @param p1 第一个点
+ * @param p2 第二个点
+ * @param ud_or_lr 1对应上下对称，2对应左右对称
+ * @return float 
+ */
+float Vision_CalSymRate(uint8_t *img,uint16_t width,uint16_t height,point_t p1,point_t p2,uint8_t ud_or_lr){
+    uint16_t max_x = Tool_CmpMax(p1.x,p2.x);
+    uint16_t min_x = Tool_CmpMin(p1.x,p2.x);
+    uint16_t max_y = Tool_CmpMax(p1.y,p2.y);
+    uint16_t min_y = Tool_CmpMin(p1.y,p2.y);
+
+    uint16_t sys_p_n = 0;
+    uint16_t total_n = (max_x - min_x + 1)*(max_y - min_y + 1);
+
+    for(int i = min_x;i<=max_x;i++) {
+        for (int j = min_y; j <= max_y; j++) {
+            if (ud_or_lr) {
+                if (img[j * width + i] == img[j * width + width - i - 1])
+                    sys_p_n++;
+            }
+            else {
+                if (img[j * width + i] == img[(height - j - 1) * width + i])
+                    sys_p_n++;
+            }
+        }
+    }
+
+    return (float)((float)sys_p_n/(float)total_n);
+}

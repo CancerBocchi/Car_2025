@@ -36,13 +36,19 @@ struct{
 
 uint8_t PushBox_IsDirectionCorrect(void){
 	
-	float left_black_rate = Vision_CalBlackRate(push_img_bw, 0,119,0+SIDE_WIDTH,119-SIDE_HEIGHT);
-	float right_black_rate = Vision_CalBlackRate(push_img_bw, 187,119,187-SIDE_WIDTH,119-SIDE_HEIGHT);
-	float top_black_rate = Vision_CalBlackRate(push_img_bw, 93-TOP_WIDTH/2,TOP_HEIGHT,94+TOP_WIDTH/2,0);
+	// float left_black_rate = Vision_CalBlackRate(push_img_bw, 0,119,0+SIDE_WIDTH,119-SIDE_HEIGHT);
+	// float right_black_rate = Vision_CalBlackRate(push_img_bw, 187,119,187-SIDE_WIDTH,119-SIDE_HEIGHT);
+	// float top_black_rate = Vision_CalBlackRate(push_img_bw, 93-TOP_WIDTH/2,TOP_HEIGHT,94+TOP_WIDTH/2,0);
 
-	return (left_black_rate < SIDE_RATE_THD && 
-				 right_black_rate < SIDE_RATE_THD && 
-				 top_black_rate > TOP_RATE_THD)?1:0;
+	// return (left_black_rate < SIDE_RATE_THD && 
+	// 			 right_black_rate < SIDE_RATE_THD && 
+	// 			 top_black_rate > TOP_RATE_THD)?1:0;
+
+	float sys_rate = Vision_CalSymRate(push_img_bw,188,120,(point_t){0,0},(point_t){20,120});
+	float left_black_rate = Vision_CalBlackRate(push_img_bw,188,120,(point_t){0,0},(point_t){20,120});
+
+	return (sys_rate > 0.9f && left_black_rate < 0.8f)?1:0;
+
 }
 
 /**

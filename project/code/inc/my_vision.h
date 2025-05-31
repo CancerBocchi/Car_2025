@@ -110,7 +110,10 @@ void Vision_ZebraHandle();
 //打印特征点
 void Vision_DrawFP();
 //计算一个矩形区域的黑色比例
-float Vision_CalBlackRate(uint8 img_bwp[imgRow][imgCol],int x1,int y1,int x2,int y2);
+float Vision_CalBlackRate(uint8 *img_bwp,uint16_t width,uint16_t height,point_t p1,point_t p2);
+//计算一个矩形区域的左右对称比例
+float Vision_CalSymRate(uint8_t *img,uint16_t width,uint16_t height,point_t p1,point_t p2,uint8_t ud_or_lr);
+
 uint8_t Vision_IsZebra();
 
 #endif
