@@ -1,6 +1,6 @@
 #include "locate_box.h"
 
-#define AREA_CON_REF	180//面积控制期望
+#define AREA_CON_REF	160//面积控制期望
 #define X_CON_REF		0//x坐标控制期望
 
 rt_sem_t locate_box_sem;
@@ -19,6 +19,28 @@ struct{
 
 }locate_box_data;
 
+/**
+ * @brief 	定位测试函数
+*/
+void sorronding_test(){
+	
+	Car_Start();
+	while(1){
+		if(MCX_rx_flag){
+			
+			//Car_Change_Speed(200,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+
+			Car_Change_Speed(0,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+
+			rt_kprintf("%d,%d\n",center_x,center_y);
+			MCX_rx_flag = 0;
+		}
+		rt_thread_delay(1);
+			
+	}
+
+
+}
 
 /**
  * @brief 判断箱子是否在中间
@@ -43,11 +65,14 @@ uint8_t PushBox_IsDirectionCorrect(void){
 	// return (left_black_rate < SIDE_RATE_THD && 
 	// 			 right_black_rate < SIDE_RATE_THD && 
 	// 			 top_black_rate > TOP_RATE_THD)?1:0;
+	float sys_rate = Vision_CalSymRate(push_img_bw,188,120,(point_t){0,0},(point_t){20,119},1);
+	float left_black_rate = Vision_CalBlackRate(push_img_bw,188,120,(point_t){0,0},(point_t){20,119});
+	//float right_black_rate = Vision_CalBlackRate(push_img_bw,188,120,(point_t){187-20,0},(point_t){187,119});
 
-	float sys_rate = Vision_CalSymRate(push_img_bw,188,120,(point_t){0,0},(point_t){20,120});
-	float left_black_rate = Vision_CalBlackRate(push_img_bw,188,120,(point_t){0,0},(point_t){20,120});
+	ips200_draw_line(20			,119+100		,20			,0+100		,RGB565_RED);
+	ips200_draw_line(188-20		,119+100		,187-20		,0+100		,RGB565_RED);
 
-	return (sys_rate > 0.9f && left_black_rate < 0.8f)?1:0;
+	return (sys_rate > 0.8f && left_black_rate < 0.70f)?1:0;
 
 }
 
@@ -57,7 +82,7 @@ uint8_t PushBox_IsDirectionCorrect(void){
  */
 void test_RotateTo_Cor(){
 
-	//Car_Start();
+	Car_Start();
 	// Car_Rotate(0);//控制住车的方向
 
 	while(1){
@@ -79,24 +104,6 @@ void test_RotateTo_Cor(){
 					push_img_bw[i][j] = mt9v03x_image[i][j]>Threshold? 255:0;
 				
 			ips200_show_gray_image(0, 100, (const uint8 *)push_img_bw, 188, 120, 188, 120, 0);
-
-
-
-			ips200_draw_line(0				,119+100				,SIDE_WIDTH			,119+100				,RGB565_RED);
-			ips200_draw_line(SIDE_WIDTH		,119+100				,SIDE_WIDTH			,119+100-SIDE_WIDTH	,RGB565_RED);
-			ips200_draw_line(SIDE_WIDTH		,119+100-SIDE_WIDTH		,0					,119+100-SIDE_WIDTH	,RGB565_RED);
-			ips200_draw_line(0				,119+100-SIDE_WIDTH		,0					,119+100				,RGB565_RED);
-
-			ips200_draw_line(187			,119+100				,187-SIDE_WIDTH		,119+100				,RGB565_RED);
-			ips200_draw_line(187-SIDE_WIDTH	,119+100				,187-SIDE_WIDTH		,119+100-SIDE_WIDTH	,RGB565_RED);
-			ips200_draw_line(187-SIDE_WIDTH	,119+100-SIDE_WIDTH		,187				,119+100-SIDE_WIDTH	,RGB565_RED);
-			ips200_draw_line(187			,119+100-SIDE_WIDTH		,187				,119+100				,RGB565_RED);
-
-			ips200_draw_line(93-TOP_WIDTH/2	,0+100					,94+TOP_WIDTH/2		,0+100				,RGB565_RED);
-			ips200_draw_line(94+TOP_WIDTH/2	,0+100					,94+TOP_WIDTH/2		,TOP_HEIGHT+100		,RGB565_RED);
-			ips200_draw_line(94+TOP_WIDTH/2	,TOP_HEIGHT+100			,93-TOP_WIDTH/2		,TOP_HEIGHT+100		,RGB565_RED);
-			ips200_draw_line(93-TOP_WIDTH/2	,TOP_HEIGHT+100			,93-TOP_WIDTH/2		,0+100			,RGB565_RED);
-
 			
 			ShouldPush = PushBox_IsDirectionCorrect();
 			rt_kprintf("%d\n",ShouldPush);
@@ -153,14 +160,22 @@ void test_midK_Cor(){
 }
 
 /**
- * @brief 矫正测试函数
+ * @brief   使用中线斜率来空 
+ * 
+*/
+void direction_correction_test2(){
+    
+}
+
+/**
+ * @brief 矫正测试函数 先角度 然后角度+前后 然后转圈推 
  * 
  */
 #define Angle_Correct_State 	0x01
 #define Location_Correct_State	0x02
 #define Push_Box_State			0x03
 
-void direction_correction_test(){
+void direction_correction_test1(){
 
 	Car_Start();
 	Car_Speed_ConRight = Con_By_TraceLine;
@@ -191,22 +206,6 @@ void direction_correction_test(){
 			ips200_show_gray_image(0, 100, (const uint8 *)push_img_bw, 188, 120, 188, 120, 0);
 
 
-
-			ips200_draw_line(0				,119+100				,SIDE_WIDTH			,119+100				,RGB565_RED);
-			ips200_draw_line(SIDE_WIDTH		,119+100				,SIDE_WIDTH			,119+100-SIDE_WIDTH	,RGB565_RED);
-			ips200_draw_line(SIDE_WIDTH		,119+100-SIDE_WIDTH		,0					,119+100-SIDE_WIDTH	,RGB565_RED);
-			ips200_draw_line(0				,119+100-SIDE_WIDTH		,0					,119+100				,RGB565_RED);
-
-			ips200_draw_line(187			,119+100				,187-SIDE_WIDTH		,119+100				,RGB565_RED);
-			ips200_draw_line(187-SIDE_WIDTH	,119+100				,187-SIDE_WIDTH		,119+100-SIDE_WIDTH	,RGB565_RED);
-			ips200_draw_line(187-SIDE_WIDTH	,119+100-SIDE_WIDTH		,187				,119+100-SIDE_WIDTH	,RGB565_RED);
-			ips200_draw_line(187			,119+100-SIDE_WIDTH		,187				,119+100				,RGB565_RED);
-
-			ips200_draw_line(93-TOP_WIDTH/2	,0+100					,94+TOP_WIDTH/2		,0+100				,RGB565_RED);
-			ips200_draw_line(94+TOP_WIDTH/2	,0+100					,94+TOP_WIDTH/2		,TOP_HEIGHT+100		,RGB565_RED);
-			ips200_draw_line(94+TOP_WIDTH/2	,TOP_HEIGHT+100			,93-TOP_WIDTH/2		,TOP_HEIGHT+100		,RGB565_RED);
-			ips200_draw_line(93-TOP_WIDTH/2	,TOP_HEIGHT+100			,93-TOP_WIDTH/2		,0+100			,RGB565_RED);
-
 			
 			ShouldPush = PushBox_IsDirectionCorrect();
 			rt_kprintf("%d\n",ShouldPush);
@@ -218,7 +217,7 @@ void direction_correction_test(){
 			{
 			case Angle_Correct_State:
 				Car_Change_Speed(0,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));//Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x)
-				if(abs(center_x - X_CON_REF)<=5 && abs(center_y - AREA_CON_REF)<=10){
+				if(abs(center_x - X_CON_REF)<=10 && abs(center_y - AREA_CON_REF)<=15){
 					Car_Change_Speed(0,0,0);
 					rt_thread_delay(200);
 					init_angle = Att_CurrentYaw;
@@ -229,7 +228,7 @@ void direction_correction_test(){
 				break;
 
 			case Location_Correct_State:
-				Car_Change_Speed(150,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+				Car_Change_Speed(200,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 				if(/*fabs(Att_CurrentYaw - init_angle)>=85*/ShouldPush){
 					angle_state = Push_Box_State;
 					Car_Change_Speed(0,0,0);
@@ -240,7 +239,7 @@ void direction_correction_test(){
 
 			case Push_Box_State:
 				Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),0);
-				if(abs(center_x - X_CON_REF)<=4){
+				if(abs(center_x - X_CON_REF)<=5){
 					Car_Change_Speed(0,0,0);
 					rt_thread_delay(100);
 					// Car_DistanceMotion(0,60,1.5);
@@ -261,9 +260,10 @@ void direction_correction_test(){
 
 					Car_DistanceMotion(0,-30,1);
 
-					Car_Change_Yaw(init_angle);
+					Car_Change_Yaw(90);
+
 					rt_thread_delay(500);
-					MCX_Change_Mode(MCX_Detection_Mode);
+					MCX_Change_Mode(MCX_Reset_Mode);
 					Car_Speed_ConRight = Con_By_TraceLine;
 					finish_flag = 1;
 
@@ -292,10 +292,10 @@ void direction_correction_test(){
  */
 void locate_box_debug(){
 	
-	//direction_correction_test();
-	test_RotateTo_Cor();
+	direction_correction_test1();
+	//test_RotateTo_Cor();
 	//test_midK_Cor();
-
+	//sorronding_test();
 	
 }
 
@@ -341,8 +341,8 @@ void locate_box_init()
 	locate_box_thread = rt_thread_create("locate",locate_box_entry,RT_NULL,4096,2,1000);
 	rt_thread_startup(locate_box_thread);
 	
-	//纵向PID初始化
-	Pos_PID_Init(&locate_box_data.Longitudinal_pid,1.2,0,0.5);
+	//纵向PID初始化 1.2 0 0.5
+	Pos_PID_Init(&locate_box_data.Longitudinal_pid,2,0,0.5);
 	locate_box_data.Longitudinal_pid.Output_Max = 500;
 	locate_box_data.Longitudinal_pid.Output_Min = -500;
 	locate_box_data.Longitudinal_pid.Value_I_Max = 500;
@@ -356,16 +356,16 @@ void locate_box_init()
 	locate_box_data.Transverse_pid.Ref = X_CON_REF;
 
 	//一次矫正PID初始化-1.3,0,-0.5
-	Pos_PID_Init(&locate_box_data.Dir_Cen_pid,-0.8,0,0);
-	locate_box_data.Dir_Cen_pid.Output_Max = 500;
-	locate_box_data.Dir_Cen_pid.Output_Min = -500;
+	Pos_PID_Init(&locate_box_data.Dir_Cen_pid,-1.4,0,-0.5);
+	locate_box_data.Dir_Cen_pid.Output_Max = 1000;
+	locate_box_data.Dir_Cen_pid.Output_Min = -1000;
 	locate_box_data.Dir_Cen_pid.Value_I_Max = 500;
 	locate_box_data.Dir_Cen_pid.Ref = X_CON_REF;
 
 	//二次矫正PID初始化
 	Pos_PID_Init(&locate_box_data.Dir_pid,2,0,0);
-	locate_box_data.Dir_pid.Output_Max = 500;
-	locate_box_data.Dir_pid.Output_Min = -500;
+	locate_box_data.Dir_pid.Output_Max = 1000;
+	locate_box_data.Dir_pid.Output_Min = -1000;
 	locate_box_data.Dir_pid.Value_I_Max = 500;
 	locate_box_data.Dir_pid.Ref = 0;
 

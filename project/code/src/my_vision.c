@@ -881,6 +881,7 @@ void Vision_CornerHandle()
 #define Circule_in     4
 #define Circule_Cor    5
 #define Circule_out    6
+#define Circule_end    7
 
 struct {
     segment_t*  circule_seg;
@@ -1034,12 +1035,26 @@ void Vision_CirculeOut_Handle(){
     if(IsStrai(Circule_Handle.anti_cir_seg[0])){
         Circule_Handle.tick++;
         if(Circule_Handle.tick==2){
-            Circule_Handle.state = Circule_Begin;
-            rt_kprintf("RS:out of cir\n");
+            Circule_Handle.state = Circule_end;
+            rt_kprintf("RS:Cir end\n");
             Current_Road = NormalRoads;
             Circule_Handle.tick = 0;
+            Car_Change_Speed(0,0,0);
+            rt_thread_delay(100);
+            Car_Stop();
         }
     }
+}
+
+void Vision_CirculeEnd_Handle(){
+
+    if(IsLose(Circule_Handle.circule_seg)){
+        //计算直线的平均斜率
+        float slope = Point_CalSlope((point_t){0,Circule_Handle.anti_cir_broder[0]},(point_t){imgRow-1,Circule_Handle.anti_cir_broder[imgRow-1]});
+        Vision_SetLineWithPointK(Circule_Handle.circule_broder,Circule_Handle.circule_fp[0].x,-slope,0,imgRow-1);
+    }
+
+    if()
 }
 
 void Vision_CirculeHandle()
@@ -1108,6 +1123,10 @@ void Vision_CirculeHandle()
             Vision_CirculeOut_Handle();
         break;
 
+        case Circule_end:
+
+        break;
+
     }
 
 }
@@ -1167,7 +1186,7 @@ float Vision_CalBlackRate(uint8 *img_bwp,uint16_t width,uint16_t height,point_t 
  * @param height 图像高度
  * @param p1 第一个点
  * @param p2 第二个点
- * @param ud_or_lr 1对应上下对称，2对应左右对称
+ * @param ud_or_lr 1对应左右对称，0对应上下对称
  * @return float 
  */
 float Vision_CalSymRate(uint8_t *img,uint16_t width,uint16_t height,point_t p1,point_t p2,uint8_t ud_or_lr){

@@ -105,7 +105,7 @@ void Motor_init()
   	pwm_init(MOTORA_PWM, 20000, 0);
 	gpio_init(MOTORA_DIR,GPO,0,GPO_PUSH_PULL);
 	//25 0.5
-	Pos_PID_Init(&Motor_PID_A,15,0.115,0);
+	Pos_PID_Init(&Motor_PID_A,20,0.115,0);
 	Motor_PID_A.Ref = 0;
 	Motor_PID_A.Output_Max = 9500;
 	Motor_PID_A.Output_Min = -9500;
@@ -116,7 +116,7 @@ void Motor_init()
   	pwm_init(MOTORB_PWM, 20000, 0);
 	gpio_init(MOTORB_DIR,GPO,0,GPO_PUSH_PULL);
 	
-	Pos_PID_Init(&Motor_PID_B,-15,-0.115,0);
+	Pos_PID_Init(&Motor_PID_B,-20,-0.115,0);
 	Motor_PID_B.Ref = 0;
 	Motor_PID_B.Output_Max = 9500;
 	Motor_PID_B.Output_Min = -9500;
@@ -127,7 +127,7 @@ void Motor_init()
 	pwm_init(MOTORC_PWM, 20000, 0);      				
 	gpio_init(MOTORC_DIR,GPO,0,GPO_PUSH_PULL);
 
-	Pos_PID_Init(&Motor_PID_C,15,0.115,0);
+	Pos_PID_Init(&Motor_PID_C,20,0.115,0);
 	Motor_PID_C.Ref = 0;
 	Motor_PID_C.Output_Max = 9500;
 	Motor_PID_C.Output_Min = -9500;
