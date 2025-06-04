@@ -30,7 +30,7 @@ void sorronding_test(){
 			
 			//Car_Change_Speed(200,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 
-			Car_Change_Speed(0,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+			Car_Change_Speed(200,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 
 			rt_kprintf("%d,%d\n",center_x,center_y);
 			MCX_rx_flag = 0;
@@ -103,10 +103,10 @@ void test_RotateTo_Cor(){
 
 		if(MCX_rx_flag){
 
-			if(!ShouldPush)
-				Car_Change_Speed(150,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
-			else
-				Car_Change_Speed(0,0,0);
+			// if(!ShouldPush)
+				Car_Change_Speed(200,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+			// else
+			// 	Car_Change_Speed(0,0,0);
 
 			MCX_rx_flag = 0;
 		}
@@ -243,8 +243,9 @@ void direction_correction_test1(){
 
 					Car_Change_Speed(0,0,0);
 					Car_DistanceMotion(0,-30,1);
-					Car_Change_Yaw(90);
+					Car_Rotate(-90);
 					rt_thread_delay(500);
+
 					MCX_Change_Mode(MCX_Reset_Mode);
 					Car_Speed_ConRight = Con_By_TraceLine;
 					finish_flag = 1;
@@ -275,8 +276,8 @@ void direction_correction_test1(){
  */
 void locate_box_debug(){
 	
-	direction_correction_test1();
-	//test_RotateTo_Cor();
+	//direction_correction_test1();
+	test_RotateTo_Cor();
 	//test_midK_Cor();
 	//sorronding_test();
 	
@@ -339,7 +340,7 @@ void locate_box_init()
 	locate_box_data.Transverse_pid.Ref = X_CON_REF;
 
 	//一次矫正PID初始化-1.3,0,-0.5
-	Pos_PID_Init(&locate_box_data.Dir_Cen_pid,-1.4,0,-0.5);
+	Pos_PID_Init(&locate_box_data.Dir_Cen_pid,-1.6,0,-0.7);
 	locate_box_data.Dir_Cen_pid.Output_Max = 1000;
 	locate_box_data.Dir_Cen_pid.Output_Min = -1000;
 	locate_box_data.Dir_Cen_pid.Value_I_Max = 500;

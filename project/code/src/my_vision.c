@@ -947,7 +947,7 @@ void Vision_CirculeState2_Handle(){
         
     else if(!IsLose(Circule_Handle.circule_seg[0])){
         Circule_Handle.tick++;
-        if(Circule_Handle.tick == 5){
+        if(Circule_Handle.tick == 1){
             rt_kprintf("RS:Cir State3\n");
             Circule_Handle.state = Circule_State3;
             Circule_Handle.tick = 0;
@@ -1090,25 +1090,41 @@ void Vision_Cir_PI_Handle(){
         break;
 
         case Circule_State2:
-            Vision_CirculeState2_Handle();
+            //Vision_CirculeState2_Handle();
+            Car_Change_Speed(0,0,0);
+            rt_thread_delay(200);
+            Car_DistanceMotion(0,30,0.5);
+            rt_kprintf("RS:Cir State3\n");
+            Circule_Handle.state = Circule_State3;
+            Circule_Handle.tick = 0;
         break;
 
         case Circule_State3:
             Car_Change_Speed(0,0,0);
-            rt_thread_delay(200);
+            rt_thread_delay(100);
             Car_Rotate( (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?90:-90);
+            rt_thread_delay(500);
+            Car_Speed_ConRight = Con_By_TraceLine;
             Circule_Handle.state = Circule_Cor;
         break;
 
         case Circule_Cor:
-            Vision_CirculeCor_Handle();
+            //Vision_CirculeCor_Handle();
+            if(IsLose(Circule_Handle.circule_seg[0]) && IsLose(Circule_Handle.anti_cir_seg[0])){
+                Circule_Handle.state = Circule_out;
+                rt_kprintf("RS:Cir Out\n");
+                Circule_Handle.tick = 0;
+            }
         break;
 
         case Circule_out:
             if(IsLose(Circule_Handle.anti_cir_seg[0])){
                 Car_Change_Speed(0,0,0);
-                rt_thread_delay(200);
+                rt_thread_delay(100);
+                Car_DistanceMotion(0,30,0.6);
                 Car_Rotate( (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?90:-90);
+                rt_thread_delay(500);
+                Car_Speed_ConRight = Con_By_TraceLine;
                 Circule_Handle.state = Circule_Begin;
                 Current_Road = NormalRoads;
             }
@@ -1198,7 +1214,8 @@ void Vision_CirculeHandle()
         }
     }
     
-    Vision_Cir_Normal_Handle();
+    // Vision_Cir_Normal_Handle();
+    Vision_Cir_PI_Handle();
 }
 
 /**
