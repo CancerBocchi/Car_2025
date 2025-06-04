@@ -88,14 +88,6 @@ void test_RotateTo_Cor(){
 	while(1){
 		uint8_t ShouldPush = 0;
 		if(mt9v03x_finish_flag){
-			//Camera_PreProcess();
-			// Camera_FindMyLine();
-			
-			// //获取中线
-			// for(int i=imgRow-1;i>=0;i--)
-			// 	Image_S.MID_Table[i]=(int16)((Image_S.rightBroder[i]+Image_S.leftBroder[i])/2);
-
-			//Vision_Draw();
 
 			Threshold = Camera_My_Adapt_Threshold(mt9v03x_image[0],IMAGE_COL,IMAGE_ROW);
 
@@ -187,16 +179,8 @@ void direction_correction_test1(){
 	while(!finish_flag){
 
 		uint8_t ShouldPush = 0;
+		//获取图像信息
 		if(mt9v03x_finish_flag){
-			//Camera_PreProcess();
-			// Camera_FindMyLine();
-			
-			// //获取中线
-			// for(int i=imgRow-1;i>=0;i--)
-			// 	Image_S.MID_Table[i]=(int16)((Image_S.rightBroder[i]+Image_S.leftBroder[i])/2);
-
-			//Vision_Draw();
-
 			Threshold = Camera_My_Adapt_Threshold(mt9v03x_image[0],IMAGE_COL,IMAGE_ROW);
 
 			for(int i=0;i<MT9V03X_H;i++)
@@ -210,6 +194,7 @@ void direction_correction_test1(){
 			ShouldPush = PushBox_IsDirectionCorrect();
 			rt_kprintf("%d\n",ShouldPush);
 		}
+
 
 		if(MCX_rx_flag){
 
@@ -257,11 +242,8 @@ void direction_correction_test1(){
 						tick = (gpio_get_level(C6))?tick + 1:0;
 
 					Car_Change_Speed(0,0,0);
-
 					Car_DistanceMotion(0,-30,1);
-
 					Car_Change_Yaw(90);
-
 					rt_thread_delay(500);
 					MCX_Change_Mode(MCX_Reset_Mode);
 					Car_Speed_ConRight = Con_By_TraceLine;
@@ -279,6 +261,7 @@ void direction_correction_test1(){
 			
 			MCX_rx_flag = 0;
 		}
+
 		rt_thread_delay(1);
 	}
 
