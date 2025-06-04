@@ -1037,8 +1037,15 @@ void Vision_CirculeOut_Handle(){
     Vision_SetLose(Circule_Handle.circule_broder,0,69);
 
     if(Circule_Handle.anti_cir_fp_n){
-        
+        int i = 0;
+        float slope = Point_CalSlope(Circule_Handle.anti_cir_fp[0],(point_t){Circule_Handle.anti_cir_fp[0].x + 3,Circule_Handle.anti_cir_broder[Circule_Handle.anti_cir_fp[0].x + 3]});
+        while((Circule_Handle.Circule_LorR?(slope>0):(slope<0))){
+            slope = Point_CalSlope( (point_t){Circule_Handle.anti_cir_fp[0].x + i       ,Circule_Handle.anti_cir_broder[Circule_Handle.anti_cir_fp[0].x + i]},
+                                    (point_t){Circule_Handle.anti_cir_fp[0].x + i + 3   ,Circule_Handle.anti_cir_broder[Circule_Handle.anti_cir_fp[0].x + i + 3]});
+            
+        }
 
+        Vision_SetLineWithPointK(Circule_Handle.anti_cir_broder,Circule_Handle.anti_cir_fp[0].x,slope,Circule_Handle.anti_cir_fp[0].x + i,0);
     }
     
     if(IsStrai(Circule_Handle.anti_cir_seg[0])){
@@ -1066,6 +1073,84 @@ void Vision_CirculeEnd_Handle(){
         Car_Change_Speed(0,0,0);
         rt_thread_delay(200);
         Car_Stop();
+    }
+
+}
+
+/**
+ * @brief 常规圆环思路
+ * 
+ */
+void Vision_Cir_PI_Handle(){
+
+    switch (Circule_Handle.state)
+    {
+        case Circule_State1:
+             Vision_CirculeState1_Handle();
+        break;
+
+        case Circule_State2:
+            Vision_CirculeState2_Handle();
+        break;
+
+        case Circule_State3:
+            Car_Change_Speed(0,0,0);
+            rt_thread_delay(200);
+            Car_Rotate( (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?90:-90);
+            Circule_Handle.state = Circule_Cor;
+        break;
+
+        case Circule_Cor:
+            Vision_CirculeCor_Handle();
+        break;
+
+        case Circule_out:
+            if(IsLose(Circule_Handle.anti_cir_seg[0])){
+                Car_Change_Speed(0,0,0);
+                rt_thread_delay(200);
+                Car_Rotate( (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?90:-90);
+                Circule_Handle.state = Circule_Begin;
+                Current_Road = NormalRoads;
+            }
+        break;
+    }
+}
+
+/**
+ * @brief PI入环处理
+ * 
+ */
+void Vision_Cir_Normal_Handle(){
+
+    switch (Circule_Handle.state)
+    {
+        case Circule_State1:
+             Vision_CirculeState1_Handle();
+        break;
+
+        case Circule_State2:
+            Vision_CirculeState2_Handle();
+        break;
+
+        case Circule_State3:
+            Vision_CirculeState3_Handle();
+        break;
+
+        case Circule_in:
+            Vision_CirculeIn_Handle();
+        break;
+
+        case Circule_Cor:
+            Vision_CirculeCor_Handle();
+        break;
+
+        case Circule_out:
+            Vision_CirculeOut_Handle();
+        break;
+
+        case Circule_end:
+            Vision_CirculeEnd_Handle();
+        break;
     }
 
 }
@@ -1112,39 +1197,8 @@ void Vision_CirculeHandle()
             rt_kprintf("RS:error detection\n");
         }
     }
-
-    switch (Circule_Handle.state)
-    {
-        case Circule_State1:
-             Vision_CirculeState1_Handle();
-        break;
-
-        case Circule_State2:
-            Vision_CirculeState2_Handle();
-        break;
-
-        case Circule_State3:
-            Vision_CirculeState3_Handle();
-        break;
-
-        case Circule_in:
-            Vision_CirculeIn_Handle();
-        break;
-
-        case Circule_Cor:
-            Vision_CirculeCor_Handle();
-        break;
-
-        case Circule_out:
-            Vision_CirculeOut_Handle();
-        break;
-
-        case Circule_end:
-            Vision_CirculeEnd_Handle();
-        break;
-
-    }
-
+    
+    Vision_Cir_Normal_Handle();
 }
 
 /**
