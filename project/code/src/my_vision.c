@@ -896,6 +896,9 @@ struct {
     int*        circule_fp_n;
     int*        anti_cir_fp_n;
 
+    int*        circule_seg_n;
+    int*        anti_cir_seg_n;
+
     uint8_t     tick;           //滤波器
     uint8_t     state;          //圆环状态
     uint8_t     Circule_LorR;   //左右圆环标志
@@ -1032,29 +1035,39 @@ void Vision_CirculeOut_Handle(){
 
     Vision_set_AdditionalLine(0,69,Circule_Handle.anti_cir_broder);       
     Vision_SetLose(Circule_Handle.circule_broder,0,69);
+
+    if(Circule_Handle.anti_cir_fp_n){
+        
+
+    }
+    
     if(IsStrai(Circule_Handle.anti_cir_seg[0])){
         Circule_Handle.tick++;
         if(Circule_Handle.tick==2){
             Circule_Handle.state = Circule_end;
             rt_kprintf("RS:Cir end\n");
-            Current_Road = NormalRoads;
             Circule_Handle.tick = 0;
-            Car_Change_Speed(0,0,0);
-            rt_thread_delay(100);
-            Car_Stop();
         }
     }
 }
 
 void Vision_CirculeEnd_Handle(){
 
-    if(IsLose(Circule_Handle.circule_seg)){
+    if(IsLose(Circule_Handle.circule_seg[0]) && !IsLose(Circule_Handle.circule_seg[1]) && Circule_Handle.circule_fp_n){
         //计算直线的平均斜率
-        float slope = Point_CalSlope((point_t){0,Circule_Handle.anti_cir_broder[0]},(point_t){imgRow-1,Circule_Handle.anti_cir_broder[imgRow-1]});
-        Vision_SetLineWithPointK(Circule_Handle.circule_broder,Circule_Handle.circule_fp[0].x,-slope,0,imgRow-1);
+        float slope = Line_GetAverK(Circule_Handle.circule_broder,Circule_Handle.circule_fp[0].x,Circule_Handle.circule_seg[1].end);
+        Vision_SetLineWithPointK(Circule_Handle.circule_broder,Circule_Handle.circule_fp[0].x,slope,0,imgRow-1);
     }
 
-    if()
+    if(!IsLose(Circule_Handle.circule_seg[0]) && *Circule_Handle.circule_seg_n == 1){
+        Current_Road = NormalRoads;
+        Circule_Handle.state = Circule_Begin;
+        rt_kprintf("RS:out of cir\n");
+        Car_Change_Speed(0,0,0);
+        rt_thread_delay(200);
+        Car_Stop();
+    }
+
 }
 
 void Vision_CirculeHandle()
@@ -1078,6 +1091,9 @@ void Vision_CirculeHandle()
 
         Circule_Handle.circule_fp_n    = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?&F.FP_n_L          :&F.FP_n_R;
         Circule_Handle.anti_cir_fp_n   = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?&F.FP_n_R          :&F.FP_n_L;
+
+        Circule_Handle.circule_seg_n   = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?&F.segment_n_L    :&F.segment_n_R;
+        Circule_Handle.anti_cir_seg_n  = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?&F.segment_n_R    :&F.segment_n_L;
 
         Circule_Handle.tick            = 0;
         Circule_Handle.state           = Circule_State1;
@@ -1124,7 +1140,7 @@ void Vision_CirculeHandle()
         break;
 
         case Circule_end:
-
+            Vision_CirculeEnd_Handle();
         break;
 
     }
