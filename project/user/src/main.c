@@ -54,7 +54,7 @@ int main()
 		if(!gpio_get_level(D16)){
 			Car_Start();
 			rt_thread_delay(2000);
-			speed_forward = 300;
+			speed_forward = 350;
 			// Car_Change_Speed(0,200,0);
 		}
 		rt_thread_delay(1);

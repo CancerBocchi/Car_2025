@@ -28,6 +28,8 @@ int16_t center_x;
 int16_t center_y;
 
 
+
+
 void MCX_uart_callback(LPUART_Type *base, lpuart_handle_t *handle, status_t status, void *userData)
 {
 	//记录收到几个字节
@@ -52,7 +54,7 @@ void MCX_uart_callback(LPUART_Type *base, lpuart_handle_t *handle, status_t stat
 		{
 			MCX_rx_buffer[count] = MCX_uart_rx_buffer;
 			count++;
-			if(count > 5)
+			if(count > 7)
 			{
 				rt_kprintf("MCX:buffer overload\n");
 				count = 0;
@@ -104,8 +106,11 @@ void MCX_uart_handle(){
 
 		case Detection_Mode:
 			if(MCX_rx_buffer[1] != 0){
-				center_x = (MCX_rx_buffer[1]==1)?(MCX_rx_buffer[2]):(-(int16_t)MCX_rx_buffer[2]);
-				center_y = MCX_rx_buffer[3];
+				// center_x = (MCX_rx_buffer[1]==1)?(MCX_rx_buffer[2]):(-(int16_t)MCX_rx_buffer[2]);
+				// center_y = MCX_rx_buffer[3];
+
+				center_x = ((int16_t)MCX_rx_buffer[2]<<8)|(int16_t)MCX_rx_buffer[3];
+				center_y = ((int16_t)MCX_rx_buffer[4]<<8)|(int16_t)MCX_rx_buffer[5];
 				MCX_Change_Mode(Location_Mode);
 				MCX_Detection_Flag = 1;
 			}
@@ -113,9 +118,11 @@ void MCX_uart_handle(){
 
 		case Location_Mode:
 			if(MCX_rx_buffer[1] != 0){		
-				center_x = (MCX_rx_buffer[1]==1)?(MCX_rx_buffer[2]):(-(int16_t)MCX_rx_buffer[2]);
+				//center_x = (MCX_rx_buffer[1]==1)?(MCX_rx_buffer[2]):(-(int16_t)MCX_rx_buffer[2]);
+				//center_y = MCX_rx_buffer[3];
+				center_x = ((int16_t)MCX_rx_buffer[2]<<8)|(int16_t)MCX_rx_buffer[3];
+				center_y = ((int16_t)MCX_rx_buffer[4]<<8)|(int16_t)MCX_rx_buffer[5];
 				last_x = center_x;
-				center_y = MCX_rx_buffer[3];
 			}
 			else 
 				center_x = last_x;
