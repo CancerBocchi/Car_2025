@@ -49,12 +49,14 @@ void trace_line_method()
 		TraceLine_Aver_Offset /= imgRow;
 
 		float yaw_now = Pos_PID_Controller(&TraceLine_Normal_Con,TraceLine_Aver_Offset);
+		float vx = Pos_PID_Controller(&TraceLine_Vx_Con,TraceLine_Aver_Offset);
 
 		// if(TraceLine_Aver_Offset>5||TraceLine_Aver_Offset<-5){
 		// 	BUZZER_SPEAK;
-			float speed_now = speed_forward-10*abs(TraceLine_Aver_Offset);
+			float speed_now = speed_forward-1.5f*abs(TraceLine_Aver_Offset)*abs(TraceLine_Aver_Offset);
 			speed_now = speed_now<0? 0:speed_now;
-			Car_Change_Speed(Car_Speed.Vx,speed_now,yaw_now);
+			// Car_Change_Speed(Car_Speed.Vx,speed_now,yaw_now);
+			 Car_Change_Speed(vx,speed_now,yaw_now);
 		// }
 			
 		// else
@@ -90,13 +92,13 @@ void trace_line_init()
 	TraceLine_Yaw_Con.Value_I = 200;
 	TraceLine_Yaw_Con.Ref = 96;
 	
-	Pos_PID_Init(&TraceLine_Vx_Con,1,0,0);
-	TraceLine_Vx_Con.Output_Max = 50;
-	TraceLine_Vx_Con.Output_Min = -50;
+	Pos_PID_Init(&TraceLine_Vx_Con,10,0,0);
+	TraceLine_Vx_Con.Output_Max = 300;
+	TraceLine_Vx_Con.Output_Min = -300;
 	TraceLine_Vx_Con.Value_I = 200;
-	TraceLine_Vx_Con.Ref = 96;
+	TraceLine_Vx_Con.Ref = 0;
 
-	Pos_PID_Init(&TraceLine_Normal_Con,-8,0,-10);
+	Pos_PID_Init(&TraceLine_Normal_Con,-7.8,0,-10);
 	TraceLine_Normal_Con.Output_Max = 200;
 	TraceLine_Normal_Con.Output_Min = -200;
 	TraceLine_Normal_Con.Value_I = 200;

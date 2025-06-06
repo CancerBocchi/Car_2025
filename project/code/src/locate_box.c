@@ -256,7 +256,7 @@ void direction_correction_test1(){
 			
 			default:
 				Car_Change_Speed(0,0,Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
-				if(abs(center_x - X_CON_REF)<=10)
+				if(abs(center_x - X_CON_REF)<=20)
 					angle_state = Angle_Correct_State;
 				break;
 			}
