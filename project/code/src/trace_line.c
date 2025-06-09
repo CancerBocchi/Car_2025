@@ -31,6 +31,23 @@ int32 TraceLine_Forward_V;
 //基础速度
 float speed_forward = 0;
 
+uint16_t speed_decision_mark(){
+
+	uint8_t lose_seq = 0;
+	//统计缺线数量
+	for(int i = imgRow-1;i>=0; i--){
+		if(Image_S.leftBroder[i] == LEFT_LOSE_VALUE && Image_S.rightBroder[i] == RIGHT_LOSE_VALUE)
+			lose_seq++;
+		else
+			TraceLine_Aver_Offset += (imgCol/2 - Image_S.MID_Table[i])*(i+1)*(i+1)/imgRow/imgRow;
+	}
+
+	if(lose_seq >= 0.3*imgRow)
+		return 250;
+
+	
+}
+
 /**
  * @brief 巡线策略函数
  * 
@@ -51,16 +68,12 @@ void trace_line_method()
 		float yaw_now = Pos_PID_Controller(&TraceLine_Normal_Con,TraceLine_Aver_Offset);
 		float vx = Pos_PID_Controller(&TraceLine_Vx_Con,TraceLine_Aver_Offset);
 
-		// if(TraceLine_Aver_Offset>5||TraceLine_Aver_Offset<-5){
-		// 	BUZZER_SPEAK;
-			float speed_now = speed_forward-1.5f*abs(TraceLine_Aver_Offset)*abs(TraceLine_Aver_Offset);
-			speed_now = speed_now<0? 0:speed_now;
-			// Car_Change_Speed(Car_Speed.Vx,speed_now,yaw_now);
-			 Car_Change_Speed(vx,speed_now,yaw_now);
-		// }
-			
-		// else
-		// 	Car_Change_Speed(Car_Speed.Vx,speed_forward,yaw_now);
+
+		float speed_now = speed_forward-1.5f*abs(TraceLine_Aver_Offset)*abs(TraceLine_Aver_Offset);
+		speed_now = speed_now<0? 0:speed_now;
+
+		Car_Change_Speed(vx,speed_now,yaw_now);
+
 		TraceLine_Aver_Offset = 0;	
 
 
