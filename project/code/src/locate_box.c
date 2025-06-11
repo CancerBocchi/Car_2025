@@ -190,8 +190,6 @@ void direction_correction_test1(){
 				
 			ips200_show_gray_image(0, 100, (const uint8 *)push_img_bw, 188, 120, 188, 120, 0);
 
-
-			
 			ShouldPush = PushBox_IsDirectionCorrect();
 			rt_kprintf("%d\n",ShouldPush);
 		}

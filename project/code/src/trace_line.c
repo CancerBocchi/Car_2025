@@ -143,7 +143,7 @@ void trace_line_entry()
 		}
 		rt_thread_delay(1);
 
-
+		
 		if(MCX_Detection_Flag){
 			rt_kprintf("trace_line:get into push box task\n");
 			Car_Change_Speed(0,0,0);
