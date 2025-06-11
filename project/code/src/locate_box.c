@@ -156,8 +156,25 @@ void test_midK_Cor(){
  * @brief   使用中线斜率来空 
  * 
 */
-void direction_correction_test2(){
-    
+void push_box(uint8_t l_or_r){
+	// Car_DistanceMotion(0,60,1.5);
+	// Car_DistanceMotion(0,-30,1.5);
+
+	Car_Change_Speed(0,200,0);
+	//确保在赛道上
+	int tick = 0;
+	while(tick <= 10)
+		tick = (!gpio_get_level(C6))?tick + 1:0;
+
+	tick = 0;				
+	//确保不再赛道上
+	while(tick <= 10)
+		tick = (gpio_get_level(C6))?tick + 1:0;
+
+	Car_Change_Speed(0,0,0);
+	Car_DistanceMotion(0,-30,0.5);
+	Car_Rotate((l_or_r == PUSH_RIGHT)?90:-90);
+	rt_thread_delay(400);
 }
 
 /**
@@ -176,6 +193,7 @@ void direction_correction_test1(){
 	uint8_t angle_state = 0;
 	float init_angle;
 	uint8_t finish_flag = 0;
+	uint8_t l_or_r;
 	//abs(center_x - 127)<5
 	while(!finish_flag){
 
@@ -207,12 +225,19 @@ void direction_correction_test1(){
 					init_angle = Att_CurrentYaw;
 					rt_kprintf("push box: init yaw is %.2f\n",init_angle);
 					angle_state = Location_Correct_State;
+					//启动分类
+					Art_Change_Mode(Classify_Mode);
+					//等待分类
+					while(Art_GetData() == 115);//115为空
+					l_or_r = Class_Add(Art_GetData());
+					Art_DataClear();
+
 				}
 
 				break;
 
 			case Location_Correct_State:
-				Car_Change_Speed(-250,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+				Car_Change_Speed((l_or_r == PUSH_RIGHT)?-250:250,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x)50,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 				if(/*fabs(Att_CurrentYaw - init_angle)>=85*/ShouldPush){
 					angle_state = Push_Box_State;
 					Car_Change_Speed(0,0,0);
@@ -224,37 +249,16 @@ void direction_correction_test1(){
 			case Push_Box_State:
 				Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),0);
 				if(abs(center_x - X_CON_REF)<=3){
-					Car_Change_Speed(0,0,0);
-					rt_thread_delay(100);
-					// Car_DistanceMotion(0,60,1.5);
-					// Car_DistanceMotion(0,-30,1.5);
-
-					Car_Change_Speed(0,200,0);
-					//确保在赛道上
-					int tick = 0;
-					while(tick <= 10)
-						tick = (!gpio_get_level(C6))?tick + 1:0;
-
-					tick = 0;				
-					//确保不再赛道上
-					while(tick <= 10)
-						tick = (gpio_get_level(C6))?tick + 1:0;
-
-					Car_Change_Speed(0,0,0);
-					Car_DistanceMotion(0,-30,1);
-					Car_Rotate(90);
-					rt_thread_delay(500);
-
+					push_box(l_or_r);
 					MCX_Change_Mode(MCX_Reset_Mode);
 					Car_Speed_ConRight = Con_By_TraceLine;
 					finish_flag = 1;
-
 				}
 				break;
 			
 			default:
 				Car_Change_Speed(0,0,Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
-				if(abs(center_x - X_CON_REF)<=10)
+				if(abs(center_x - X_CON_REF)<=20)
 					angle_state = Angle_Correct_State;
 				break;
 			}

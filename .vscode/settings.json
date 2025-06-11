@@ -33,7 +33,10 @@
         "string.h": "c",
         "zf_device_tft180.h": "c",
         "locate_box.h": "c",
-        "user_math.h": "c"
+        "user_math.h": "c",
+        "zf_driver_soft_spi.h": "c",
+        "zf_device_ips200.h": "c",
+        "cdefs.h": "c"
     },
     "C_Cpp.default.compilerPath": "cl.exe",
     "C_Cpp.errorSquiggles": "disabled"

@@ -36,6 +36,7 @@ void Art_uart_callback(LPUART_Type *base, lpuart_handle_t *handle, status_t stat
 		else if(Art_uart_rx_buffer == BUFFER_TAIL)
 		{
             Art_Data = Art_rx_buffer[1];
+
 			count = 0;
             rx_state = 0;
 		}
@@ -44,7 +45,7 @@ void Art_uart_callback(LPUART_Type *base, lpuart_handle_t *handle, status_t stat
 		{
 			Art_rx_buffer[count] = Art_uart_rx_buffer;
 			count++;
-			if(count > 4)
+			if(count > 3)
 			{
 				rt_kprintf("Art:buffer overload\n");
 				count = 0;
@@ -75,9 +76,6 @@ void Art_Change_Mode(uint8_t mode){
 			ArtCurrent_Mode = Reset_Mode;
 		break;
 
-		case 'N':
-			ArtCurrent_Mode = NumLetter_Mode;
-		break;
 	}
 }
 
@@ -96,9 +94,6 @@ void Art_uart_handle(){
 
 		break;
 
-		case NumLetter_Mode:
-
-		break;
 	}
 }
 
@@ -112,7 +107,7 @@ uint8_t Art_GetData(){
 }
 
 void Art_DataClear(){
-	Art_Data = Class_Null;
+	Art_Data = 115;
 }
 
 /**
