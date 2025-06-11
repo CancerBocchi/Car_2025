@@ -9,7 +9,6 @@ uint8_t Art_uart_rx_buffer;
 
 typedef enum{
     Classify_Mode,
-    NumLetter_Mode,
     Reset_Mode,
 }Art_Mode_t;
 

@@ -55,7 +55,6 @@ void Step_Motor_Init()
 	
 	S_Motor_test_Thread = rt_thread_create("S_motor",Catch_Entry,NULL,1024,2,1000);
 
-	Turntable_Rotate(23.8);
 	rt_thread_delay(1000);
 	Step_Motor_Reset();
 

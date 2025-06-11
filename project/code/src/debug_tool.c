@@ -306,21 +306,6 @@ help:
 
 MSH_CMD_EXPORT(CarMove, CarMove sample: CarMove <dx> <dy> <dt>);
 
-/**
- * @brief 车定距跑指令
-*/
-static void SetBasket(int argc, char**argv){
-    int num = atoi(argv[1]);
-    if(atoi(argv[1]) < 7 && atoi(argv[1]) > 0){
-        Class_Change_Basket(num);
-        rt_kprintf("Current Basket Changed to %d\n",num);
-        return;
-    }
-     rt_kprintf("Error input:%d\n",num);
-        
-}
-
-MSH_CMD_EXPORT(SetBasket, SetBasket sample: SetBasket <num>);
 
 /**
  * @brief 获得分段信息

@@ -160,7 +160,7 @@ void push_box(uint8_t l_or_r){
 	// Car_DistanceMotion(0,60,1.5);
 	// Car_DistanceMotion(0,-30,1.5);
 
-	Car_Change_Speed(0,200,0);
+	Car_Change_Speed(0,250,0);
 	//确保在赛道上
 	int tick = 0;
 	while(tick <= 10)
@@ -226,7 +226,7 @@ void direction_correction_test1(){
 					rt_kprintf("push box: init yaw is %.2f\n",init_angle);
 					angle_state = Location_Correct_State;
 					//启动分类
-					Art_Change_Mode(Classify_Mode);
+					Art_Change_Mode(Art_Classify_Mode);
 					//等待分类
 					while(Art_GetData() == 115);//115为空
 					l_or_r = Class_Add(Art_GetData());
@@ -237,7 +237,9 @@ void direction_correction_test1(){
 				break;
 
 			case Location_Correct_State:
-				Car_Change_Speed((l_or_r == PUSH_RIGHT)?-250:250,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x)50,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+				Car_Change_Speed((l_or_r == PUSH_RIGHT)?-250:250,
+									Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),
+									Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 				if(/*fabs(Att_CurrentYaw - init_angle)>=85*/ShouldPush){
 					angle_state = Push_Box_State;
 					Car_Change_Speed(0,0,0);
