@@ -126,5 +126,5 @@ void Art_UART_Init(void)
 	// 设置中断函数及其参数
 	uart_set_handle(Art_UART, &Art_g_lpuartHandle, Art_uart_callback, NULL, 0, Art_receivexfer.data, 1);
 
-	Art_Change_Mode(Art_Reset_Mode);
+	// Art_Change_Mode(Art_Reset_Mode);
 }

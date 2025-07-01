@@ -59,6 +59,9 @@ uint8_t Class_Add(uint8_t Class){
  * 
  */
 void Class_Debug(){
+
+    rt_kprintf("Class Amount:%d \n",Class_Number);
+
     for(int i = 0; i < Class_Number; i++){
         if(Class_Info[i].Class_Huge == Class_Num){
             rt_kprintf("Class:NO.%d, %d\n", Class_Info[i].num, Class_Info[i].Class_Small);

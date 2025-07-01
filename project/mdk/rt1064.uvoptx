@@ -168,18 +168,34 @@
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>24</LineNumber>
+          <LineNumber>37</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-2147423564</Address>
+          <Address>-2147478506</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\camera.c</Filename>
+          <Filename>..\code\src\art.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\rt1064\camera.c\24</Expression>
+          <Expression>\\rt1064\../code/src/art.c\37</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>28</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>-2147478564</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\code\src\art.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\rt1064\../code/src/art.c\28</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -252,6 +268,21 @@
           <count>13</count>
           <WinNumber>1</WinNumber>
           <ItemText>center_y,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>14</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Art_Data,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>15</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Art_rx_buffer,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>16</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Art_uart_rx_buffer</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
