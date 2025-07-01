@@ -226,7 +226,7 @@ void direction_correction_test1(){
 					rt_kprintf("push box: init yaw is %.2f\n",init_angle);
 					angle_state = Location_Correct_State;
 					//启动分类
-					Art_Change_Mode(Art_Classify_Mode);
+					rt_thread_delay(600);
 					//等待分类
 					while(Art_GetData() == 115);//115为空
 					l_or_r = Class_Add(Art_GetData());

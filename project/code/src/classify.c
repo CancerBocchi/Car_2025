@@ -28,7 +28,7 @@ uint8_t Class_Add(uint8_t Class){
         Class_Info[Class_Number].Class_Flag     = 1;
         Class_Info[Class_Number].num            = Class_Number+1;
         Class_Info[Class_Number].Class_Huge     = Class_Num;
-        Class_Info[Class_Number].Class_Small    = Class;
+        Class_Info[Class_Number].Class_Small    = Class-1;
         Class_Number++;
         return (Class%2)?0:1;
     }

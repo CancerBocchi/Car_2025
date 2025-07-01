@@ -28,11 +28,11 @@ void Art_uart_callback(LPUART_Type *base, lpuart_handle_t *handle, status_t stat
 	if(kStatus_LPUART_RxIdle == status)
     {
 		
-		if(Art_uart_rx_buffer == BUFFER_HEAD)
+		if(Art_uart_rx_buffer == ART_HEAD)
 		{
 			rx_state = 1;
 		}
-		else if(Art_uart_rx_buffer == BUFFER_TAIL)
+		else if(Art_uart_rx_buffer == ART_TAIL)
 		{
             Art_Data = Art_rx_buffer[1];
 
@@ -106,7 +106,7 @@ uint8_t Art_GetData(){
 }
 
 void Art_DataClear(){
-	Art_Data = 115;
+	Art_Data = 0;
 }
 
 /**

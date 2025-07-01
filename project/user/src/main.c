@@ -36,10 +36,11 @@ int main()
 	buzzer_init();
 	Camera_and_Screen_Init();
 	MCX_UART_Init();
+	Art_UART_Init();
 	
 	rt_kprintf("---------- task init ----------\n");
-	locate_box_init();
-	trace_line_init();
+	// locate_box_init();
+	// trace_line_init();
 
 
 	rt_kprintf("--------- init end ----------\n");
@@ -52,11 +53,16 @@ int main()
 	while(1){
 
 		if(!gpio_get_level(D16)){
-			Car_Start();
-			rt_thread_delay(2000);
-			speed_forward = 380;
-			// Car_Change_Speed(0,200,0);
+			// Car_Start();
+			// rt_thread_delay(2000);
+			// speed_forward = 380;
+			rt_thread_delay(600);
+			while(Art_GetData() == 0);
+			Class_Add(Art_GetData());
+			Art_DataClear();
 		}
+
+
 		rt_thread_delay(1);
 	}
 
