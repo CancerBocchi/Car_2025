@@ -30,6 +30,7 @@ uint8_t Class_Add(uint8_t Class){
         Class_Info[Class_Number].Class_Huge     = Class_Num;
         Class_Info[Class_Number].Class_Small    = Class-1;
         Class_Number++;
+        rt_kprintf("Class:NO.%d, %d\n", Class_Number, Class-1);
         return (Class%2)?0:1;
     }
     //工具分类
@@ -40,6 +41,7 @@ uint8_t Class_Add(uint8_t Class){
             Class_Info[Class_Number].Class_Huge     = Class_Utilities;
             Class_Info[Class_Number].Class_Small    = Class;
             Class_Number++;
+            rt_kprintf("Class:NO.%d, %c\n", Class_Number, Class);
             return 1;//右
         }
         else if(Class <= Class_Sound){
@@ -48,6 +50,7 @@ uint8_t Class_Add(uint8_t Class){
             Class_Info[Class_Number].Class_Huge     = Class_Electronic_Peripherals;
             Class_Info[Class_Number].Class_Small    = Class;
             Class_Number++;
+            rt_kprintf("Class:NO.%d, %c\n", Class_Number, Class);
             return 0;//左
         }
     }
