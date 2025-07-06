@@ -165,38 +165,6 @@
           <ExecCommand></ExecCommand>
           <Expression>\\rt1064\../../libraries/zf_device/zf_device_config.c\523</Expression>
         </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>37</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-2147478506</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\code\src\art.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\rt1064\../code/src/art.c\37</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>28</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-2147478564</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\code\src\art.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\rt1064\../code/src/art.c\28</Expression>
-        </Bp>
       </Breakpoint>
       <WatchWindow1>
         <Ww>
@@ -283,6 +251,16 @@
           <count>16</count>
           <WinNumber>1</WinNumber>
           <ItemText>Art_uart_rx_buffer</ItemText>
+        </Ww>
+        <Ww>
+          <count>17</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Att</ItemText>
+        </Ww>
+        <Ww>
+          <count>18</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Att.yaw</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

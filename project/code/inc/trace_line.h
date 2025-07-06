@@ -10,7 +10,7 @@ extern float speed_forward;
 
 extern Pos_PID_t TraceLine_Yaw_Con;
 extern Pos_PID_t TraceLine_Vx_Con;
-extern int32 TraceLine_Aver_Offset;
+extern float TraceLine_Aver_Offset;
 extern int32 TraceLine_Last_Offset;
 extern int32 TraceLine_Forward_V;
 extern float mid_offset;

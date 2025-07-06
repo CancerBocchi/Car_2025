@@ -29,10 +29,10 @@ void sorronding_test(){
 	while(1){
 		if(MCX_rx_flag){
 			
-			//Car_Change_Speed(200,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+			//Car_Change_Speed(0,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 
-			Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),0,0);
-			//Car_Change_Speed(250,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+			//Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),0,0);
+			Car_Change_Speed(250,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 			rt_kprintf("%d,%d\n",center_x,center_y);
 			MCX_rx_flag = 0;
 		}
@@ -172,9 +172,10 @@ void push_box(uint8_t l_or_r){
 		tick = (gpio_get_level(C6))?tick + 1:0;
 
 	Car_Change_Speed(0,0,0);
-	Car_DistanceMotion(0,-30,0.5);
+	rt_thread_delay(200);
+	Car_DistanceMotion(0,-30,0.6);
 	Car_Rotate((l_or_r == PUSH_RIGHT)?90:-90);
-	rt_thread_delay(400);
+	rt_thread_delay(300);
 }
 
 /**
@@ -209,7 +210,7 @@ void direction_correction_test1(){
 			ips200_show_gray_image(0, 100, (const uint8 *)push_img_bw, 188, 120, 188, 120, 0);
 
 			ShouldPush = PushBox_IsDirectionCorrect();
-			rt_kprintf("%d\n",ShouldPush);
+			//rt_kprintf("%d\n",ShouldPush);
 		}
 
 
@@ -226,9 +227,9 @@ void direction_correction_test1(){
 					rt_kprintf("push box: init yaw is %.2f\n",init_angle);
 					angle_state = Location_Correct_State;
 					//启动分类
-					Art_Change_Mode(Art_Classify_Mode);
+					rt_thread_delay(400);
 					//等待分类
-					while(Art_GetData() == 115);//115为空
+					while(Art_GetData() == 0);//115为空
 					l_or_r = Class_Add(Art_GetData());
 					Art_DataClear();
 
@@ -338,14 +339,14 @@ void locate_box_init()
 	locate_box_data.Longitudinal_pid.Ref = AREA_CON_REF;
 	
 	//横向PID初始化 1.2
-	Pos_PID_Init(&locate_box_data.Transverse_pid,-1.3,0,0);
+	Pos_PID_Init(&locate_box_data.Transverse_pid,1.3,0,0);
 	locate_box_data.Transverse_pid.Output_Max = 500;
 	locate_box_data.Transverse_pid.Output_Min = -500;
 	locate_box_data.Transverse_pid.Value_I_Max = 500;
 	locate_box_data.Transverse_pid.Ref = X_CON_REF;
 
 	//一次矫正PID初始化 -1.4,0,-0.7
-	Pos_PID_Init(&locate_box_data.Dir_Cen_pid,1.0,0,0);
+	Pos_PID_Init(&locate_box_data.Dir_Cen_pid,-1.2,0,0);
 	locate_box_data.Dir_Cen_pid.Output_Max = 1000;
 	locate_box_data.Dir_Cen_pid.Output_Min = -1000;
 	locate_box_data.Dir_Cen_pid.Value_I_Max = 500;

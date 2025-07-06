@@ -36,7 +36,9 @@
         "user_math.h": "c",
         "zf_driver_soft_spi.h": "c",
         "zf_device_ips200.h": "c",
-        "cdefs.h": "c"
+        "cdefs.h": "c",
+        "zf_device_icm20602.h": "c",
+        "attitude_algorithm.h": "c"
     },
     "C_Cpp.default.compilerPath": "cl.exe",
     "C_Cpp.errorSquiggles": "disabled"

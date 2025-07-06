@@ -16,22 +16,22 @@ typedef enum{
 //十五类物品分类
 typedef enum{
 
-    Class_Wrench        =   'd',    //扳手
-    Class_Solder        =   'e',    //电烙铁
-    Class_Drill         =   'f',    //手电钻
-    Class_Tape          =   'g',    //卷尺
-    Class_Screwdriver   =   'h',    //螺丝刀
-    Class_Tongs         =   'i',    //钳子
-    Class_Oscilloscope  =   'j',    //示波器
-    Class_Multimeter    =   'k',    //万用表
+    Class_Wrench        =   'e',    //扳手
+    Class_Solder        =   'f',    //电烙铁
+    Class_Drill         =   'g',    //手电钻
+    Class_Tape          =   'h',    //卷尺
+    Class_Screwdriver   =   'i',    //螺丝刀
+    Class_Tongs         =   'j',    //钳子
+    Class_Oscilloscope  =   'k',    //示波器
+    Class_Multimeter    =   'l',    //万用表
 
-    Class_Printer       =   'l',    //打印机
-    Class_Keyboard      =   'm',    //键盘
-    Class_Phone         =   'n',    //手机
-    Class_Mouse         =   'o',    //鼠标
-    Class_Headphone     =   'p',    //头戴式耳机
-    Class_Monitor       =   'q',    //显示器
-    Class_Sound         =   'r',    //音响  
+    Class_Printer       =   'm',    //打印机
+    Class_Keyboard      =   'n',    //键盘
+    Class_Phone         =   'o',    //手机
+    Class_Mouse         =   'p',    //鼠标
+    Class_Headphone     =   'q',    //头戴式耳机
+    Class_Monitor       =   'r',    //显示器
+    Class_Sound         =   's',    //音响  
 
 }Class_Fifteen_t;
 

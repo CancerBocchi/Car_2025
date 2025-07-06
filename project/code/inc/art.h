@@ -11,6 +11,9 @@
 #define Art_Reset_Mode          ('R')
 #define Art_Classify_Mode       ('C')
 
+#define ART_TAIL    (0xfe)
+#define ART_HEAD    (0xff)
+
 uint8_t Art_GetData();
 void Art_Change_Mode(uint8_t mode);
 void Art_UART_Init(void);

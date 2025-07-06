@@ -95,9 +95,11 @@ void Vision_SymbolJudge()
         if(Vision_IsZebra()){
             Current_Road = ZebraRoads;
         }
-        else if( (F.segment_n_L == 1 && IsStrai(F.my_segment_L[0]) && IsLose(F.my_segment_R[1]))||
-            (F.segment_n_R == 1 && IsStrai(F.my_segment_R[0]) && IsLose(F.my_segment_L[1])) )
-            Current_Road = CirculeRoads;
+        else if( (F.segment_n_L == 1 && IsStrai(F.my_segment_L[0]) && IsLose(F.my_segment_R[1]) && F.segment_n_R == 2) ||
+            (F.segment_n_R == 1 && IsStrai(F.my_segment_R[0]) && IsLose(F.my_segment_L[1])&& F.segment_n_L == 2) ){
+                Current_Road = CirculeRoads;
+            }
+            
 
         else if(CornerState1||CornerState2||CornerState3) 
             Current_Road = CornerRoads;
@@ -1082,7 +1084,7 @@ void Vision_CirculeEnd_Handle(){
  * 
  */
 void Vision_Cir_PI_Handle(){
-
+    static float init_angle;
     switch (Circule_Handle.state)
     {
         case Circule_State1:
@@ -1091,30 +1093,42 @@ void Vision_Cir_PI_Handle(){
 
         case Circule_State2:
             //Vision_CirculeState2_Handle();
-            Car_Change_Speed(0,0,0);
-            rt_thread_delay(200);
-            Car_DistanceMotion(0,20,0.3);
-            rt_kprintf("RS:Cir State3\n");
+            // Car_Change_Speed(0,0,0);
+            // rt_thread_delay(200);
+            // Car_DistanceMotion(0,20,0.3);
+            init_angle = Att_CurrentYaw;
+            rt_kprintf("RS:Cir State3, yaw:%.2f\n",init_angle);
             Circule_Handle.state = Circule_State3;
             Circule_Handle.tick = 0;
         break;
 
         case Circule_State3:
-            Car_Change_Speed(0,0,0);
-            rt_thread_delay(100);
-            Car_Rotate( (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?90:-90);
-            rt_thread_delay(500);
-            Car_Speed_ConRight = Con_By_TraceLine;
-            Circule_Handle.state = Circule_Cor;
+            // Car_Change_Speed(0,0,0);
+            // rt_thread_delay(100);
+            // Car_Rotate( (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?90:-90);
+            // rt_thread_delay(500);
+            Circule_Handle.anti_cir_broder[0] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 0:187;
+            Circule_Handle.anti_cir_broder[69] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 187:10;
+            Vision_set_AdditionalLine(0,imgRow-1,Circule_Handle.anti_cir_broder); 
+            Vision_SetLose(Circule_Handle.circule_broder,0,imgRow-1);
+            // rt_kprintf("yaw:%.2f\n",fabs(init_angle - Att_CurrentYaw));
+
+            if(fabs(Att_CurrentYaw - init_angle) > 50.0f){
+                Car_Speed_ConRight = Con_By_TraceLine;
+                Circule_Handle.state = Circule_Cor;
+            }
+
         break;
 
         case Circule_Cor:
             //Vision_CirculeCor_Handle();
             if(IsLose(Circule_Handle.circule_seg[0]) && IsLose(Circule_Handle.anti_cir_seg[0])){
                 Circule_Handle.tick++;
-                if(Circule_Handle.tick >= 2){
+                if(Circule_Handle.tick >= 1){
+                    init_angle = Att_CurrentYaw;
                     Circule_Handle.state = Circule_out;
-                    rt_kprintf("RS:Cir Out\n");
+                    rt_kprintf("RS:Cir Out, init yaw:%.2f\n",init_angle);
+
                     Circule_Handle.tick = 0;
                 }
             }
@@ -1123,16 +1137,26 @@ void Vision_Cir_PI_Handle(){
         break;
 
         case Circule_out:
-            if(IsLose(Circule_Handle.anti_cir_seg[0])){
-                Car_Change_Speed(0,0,0);
-                rt_thread_delay(100);
-                Car_DistanceMotion(0,10,0.3);
-                Car_Rotate( (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?90:-90);
-                rt_thread_delay(500);
-                Car_Speed_ConRight = Con_By_TraceLine;
-                Circule_Handle.state = Circule_Begin;
-                Current_Road = NormalRoads;
-            }
+
+                // Car_Change_Speed(0,0,0);
+                // rt_thread_delay(100);
+                // Car_DistanceMotion(0,10,0.3);
+                // Car_Rotate( (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?90:-90);
+                // rt_thread_delay(500);
+
+                Circule_Handle.anti_cir_broder[0] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 10:187;
+                Circule_Handle.anti_cir_broder[69] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 187:30;
+
+                Vision_set_AdditionalLine(0,69,Circule_Handle.anti_cir_broder);       
+                Vision_SetLose(Circule_Handle.circule_broder,0,69);
+                // rt_kprintf("yaw:%.2f\n",fabs(init_angle - Att_CurrentYaw));
+
+                if(fabs(init_angle - Att_CurrentYaw) > 50.0f){
+                    Car_Speed_ConRight = Con_By_TraceLine;
+                    rt_kprintf("RS:Out of Circule\n");
+                    Circule_Handle.state = Circule_Begin;
+                    Current_Road = NormalRoads;
+                }
         break;
     }
 }
@@ -1207,7 +1231,7 @@ void Vision_CirculeHandle()
 
 
     //·ÀÖ¹´íÎóÅĞ¶Ï
-    if(Circule_Handle.state == Circule_State1 || Circule_Handle.state == Circule_State2 || Circule_Handle.state == Circule_State3){
+    if(Circule_Handle.state == Circule_State1||Circule_Handle.state == Circule_State2){
 
         static int out_n;
         out_n = (!IsStrai(Circule_Handle.anti_cir_seg[0])&&(Vision_GetSegLenghth(Circule_Handle.anti_cir_seg[0]) >= 20))? out_n+1:0;

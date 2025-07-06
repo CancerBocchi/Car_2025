@@ -9,6 +9,9 @@
 #include "trace_line.h"
 #include "camera.h"
 
+#define BASIC_SPEED 290
+#define Cir_SPEED 	290
+
 //-------------------------------------------------------------------------------------------------------------------
 //  @data 数据部分
 //-------------------------------------------------------------------------------------------------------------------
@@ -24,7 +27,7 @@ Pos_PID_t TraceLine_Yaw_Con;
 Pos_PID_t TraceLine_Vx_Con;
 Pos_PID_t TraceLine_Normal_Con;
 
-int32 TraceLine_Aver_Offset;
+float TraceLine_Aver_Offset;
 int32 TraceLine_Last_Offset;
 int32 TraceLine_Forward_V;
 
@@ -60,29 +63,40 @@ void trace_line_method()
 	if(Car_Speed_ConRight == Con_By_TraceLine){
 		//策略1 常规巡线
 		//计算总偏差值
-		for(int i = imgRow-1; i>=row_begin;i--)
-			TraceLine_Aver_Offset += (imgCol/2 - Image_S.MID_Table[i])*(i+1)*(i+1)/imgRow/imgRow;
+		uint16_t valid_line = 0;
+		for(int i = imgRow-1; i>=row_begin;i--){
+			if(Image_S.leftBroder[i] != LEFT_LOSE_VALUE || Image_S.rightBroder[i] != RIGHT_LOSE_VALUE){
+				TraceLine_Aver_Offset += (imgCol/2 - Image_S.MID_Table[i])*(i+1)*(i+1)/imgRow/imgRow;
+				valid_line+=1;
+			}
+		}
 
-		TraceLine_Aver_Offset /= imgRow;
+		if(valid_line != 0)
+			TraceLine_Aver_Offset /= valid_line;
+		else
+			TraceLine_Aver_Offset = 0;
 
+		//策略1 无中间环
 		float yaw_now = Pos_PID_Controller(&TraceLine_Normal_Con,TraceLine_Aver_Offset);
 		float vx = Pos_PID_Controller(&TraceLine_Vx_Con,TraceLine_Aver_Offset);
 
+		float speed_now = (Current_Road == CirculeRoads)?Cir_SPEED:BASIC_SPEED;
 
-		float speed_now = speed_forward-1.5f*abs(TraceLine_Aver_Offset)*abs(TraceLine_Aver_Offset);
 		speed_now = speed_now<0? 0:speed_now;
-
 		Car_Change_Speed(vx,speed_now,yaw_now);
+		TraceLine_Aver_Offset = 0;
 
-		TraceLine_Aver_Offset = 0;	
+		//策略2 加上角度环
+		// float yaw_now = Pos_PID_Controller(&TraceLine_Yaw_Con,TraceLine_Aver_Offset);
+		// float vx = Pos_PID_Controller(&TraceLine_Vx_Con,TraceLine_Aver_Offset);
 
+		// float speed_now = (Current_Road == CirculeRoads)?Cir_SPEED:BASIC_SPEED;
+		// speed_now = speed_now<0? 0:speed_now;
 
-		//策略2 最长白线法
-		// float vx = Pos_PID_Controller(&TraceLine_Vx_Con,Center);
-		// float yaw = Pos_PID_Controller(&TraceLine_Yaw_Con,Center);
-		// Car_Change_Speed(vx,speed_forward,yaw);
+		// Car_Change_Yaw(Att_CurrentYaw + yaw_now);
+		// Car_Change_Speed(0,speed_now,0);
+		// TraceLine_Aver_Offset = 0;
 
-		
 	}
 }
 
@@ -99,21 +113,21 @@ void trace_line_init()
 	//初始化PID控制块 
 	// Pos_PID_Init(&TraceLine_Yaw_Con,-10,0,-10);//八邻 时的参数
 
-	Pos_PID_Init(&TraceLine_Yaw_Con,3,1,0);
+	Pos_PID_Init(&TraceLine_Yaw_Con,-2,0,0);
 	TraceLine_Yaw_Con.Output_Max = 150;
 	TraceLine_Yaw_Con.Output_Min = -150;
 	TraceLine_Yaw_Con.Value_I = 200;
-	TraceLine_Yaw_Con.Ref = 96;
+	TraceLine_Yaw_Con.Ref = 0;
 	
-	Pos_PID_Init(&TraceLine_Vx_Con,10,0,0);
+	Pos_PID_Init(&TraceLine_Vx_Con,5,0,0);
 	TraceLine_Vx_Con.Output_Max = 300;
 	TraceLine_Vx_Con.Output_Min = -300;
 	TraceLine_Vx_Con.Value_I = 200;
 	TraceLine_Vx_Con.Ref = 0;
 
-	Pos_PID_Init(&TraceLine_Normal_Con,-7.8,0,-10);
-	TraceLine_Normal_Con.Output_Max = 200;
-	TraceLine_Normal_Con.Output_Min = -200;
+	Pos_PID_Init(&TraceLine_Normal_Con,-7.2,0,-10);
+	TraceLine_Normal_Con.Output_Max = 250;
+	TraceLine_Normal_Con.Output_Min = -350;
 	TraceLine_Normal_Con.Value_I = 200;
 	TraceLine_Normal_Con.Ref = 0;
 

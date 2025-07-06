@@ -39,8 +39,8 @@ int main()
 	Art_UART_Init();
 	
 	rt_kprintf("---------- task init ----------\n");
-	// locate_box_init();
-	// trace_line_init();
+	locate_box_init();
+	trace_line_init();
 
 
 	rt_kprintf("--------- init end ----------\n");
@@ -54,19 +54,21 @@ int main()
 	while(1){
 
 		if(!gpio_get_level(D16)){
-			// Car_Start();
-			// rt_thread_delay(2000);
-			// speed_forward = 380;
-
-			//启动分类
-			rt_thread_delay(600);
-			Art_Change_Mode(Art_Classify_Mode);
-			//等待分类
-			while(Art_GetData() == 115);//115为空
-			l_or_r = Class_Add(Art_GetData());
-			Art_DataClear();
+			Car_Start();
+			rt_thread_delay(2000);
+			speed_forward = 300;
+			// Car_Speed_ConRight = Con_By_AngleLoop;
+			// rt_thread_delay(600);
+			// while(Art_GetData() == 0);
+			// Class_Add(Art_GetData());
+			// Art_DataClear();
 		}
-		
+
+		// if(speed_forward){
+		// 	Car_Rotate(90);
+		// 	rt_thread_delay(1000);
+		// }
+
 
 		rt_thread_delay(1);
 	}

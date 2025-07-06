@@ -106,7 +106,7 @@ uint8_t Art_GetData(){
 }
 
 void Art_DataClear(){
-	Art_Data = 115;
+	Art_Data = 0;
 }
 
 /**

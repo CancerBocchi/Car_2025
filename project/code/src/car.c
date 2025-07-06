@@ -88,7 +88,7 @@ void car_motion_run()
 {
 	//gpio_toggle_level(B9);
 
-	Att_GetYaw();
+	// Att_GetYaw();
 	
 	//角度闭环 
 	if(Car_Speed_ConRight == Con_By_AngleLoop)
@@ -111,6 +111,7 @@ void car_motion_entry()
 	while(1)
 	{
 		gpio_toggle_level(C3);
+		Att_GetYaw();
 		if(Car_BootSwitch)
 			car_motion_run();
 		gpio_toggle_level(C3);
@@ -169,10 +170,10 @@ void car_motion_Init()
 	
 	//车辆控制块初始化
 	Car_Speed_ConRight = Con_By_TraceLine;
-	Pos_PID_Init(&Car_Yaw_Controller,4.5,0,0);
+	Pos_PID_Init(&Car_Yaw_Controller,6.0,0,0);
 	Car_Yaw_Controller.Ref = 0;
-	Car_Yaw_Controller.Output_Max = 160;
-	Car_Yaw_Controller.Output_Min = -160;
+	Car_Yaw_Controller.Output_Max = 350;
+	Car_Yaw_Controller.Output_Min = -350;
 	Car_Yaw_Controller.Value_I_Max = 1000;
 
 
