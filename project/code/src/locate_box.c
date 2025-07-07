@@ -1,6 +1,6 @@
 #include "locate_box.h"
 
-#define AREA_CON_REF	160//高度控制期望
+#define AREA_CON_REF	160//160//高度控制期望
 // #define X_CON_REF	
 #define X_CON_REF		160
 
@@ -32,7 +32,7 @@ void sorronding_test(){
 			//Car_Change_Speed(0,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 
 			//Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),0,0);
-			Car_Change_Speed(250,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+			Car_Change_Speed(350,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 			rt_kprintf("%d,%d\n",center_x,center_y);
 			MCX_rx_flag = 0;
 		}
@@ -160,7 +160,7 @@ void push_box(uint8_t l_or_r){
 	// Car_DistanceMotion(0,60,1.5);
 	// Car_DistanceMotion(0,-30,1.5);
 
-	Car_Change_Speed(0,250,0);
+	Car_Change_Speed(0,300,0);
 	//确保在赛道上
 	int tick = 0;
 	while(tick <= 10)
@@ -173,9 +173,9 @@ void push_box(uint8_t l_or_r){
 
 	Car_Change_Speed(0,0,0);
 	rt_thread_delay(200);
-	Car_DistanceMotion(0,-30,0.6);
+	Car_DistanceMotion(0,-30,0.7);
 	Car_Rotate((l_or_r == PUSH_RIGHT)?90:-90);
-	rt_thread_delay(300);
+	rt_thread_delay(250);
 }
 
 /**
@@ -222,12 +222,13 @@ void direction_correction_test1(){
 				Car_Change_Speed(0,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));//Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x)
 				if(abs(center_x - X_CON_REF)<=10 && abs(center_y - AREA_CON_REF)<=15){
 					Car_Change_Speed(0,0,0);
-					rt_thread_delay(200);
+					rt_thread_delay(150);
 					init_angle = Att_CurrentYaw;
 					rt_kprintf("push box: init yaw is %.2f\n",init_angle);
 					angle_state = Location_Correct_State;
+					Art_DataClear();
 					//启动分类
-					rt_thread_delay(400);
+					rt_thread_delay(500);
 					//等待分类
 					while(Art_GetData() == 0);//115为空
 					l_or_r = Class_Add(Art_GetData());
@@ -244,7 +245,7 @@ void direction_correction_test1(){
 				if(/*fabs(Att_CurrentYaw - init_angle)>=85*/ShouldPush){
 					angle_state = Push_Box_State;
 					Car_Change_Speed(0,0,0);
-					rt_thread_delay(200);
+					rt_thread_delay(150);
 					Car_Rotate(0);
 				}
 				break;
@@ -346,7 +347,7 @@ void locate_box_init()
 	locate_box_data.Transverse_pid.Ref = X_CON_REF;
 
 	//一次矫正PID初始化 -1.4,0,-0.7
-	Pos_PID_Init(&locate_box_data.Dir_Cen_pid,-1.2,0,0);
+	Pos_PID_Init(&locate_box_data.Dir_Cen_pid,-1.5,0,-0.5);
 	locate_box_data.Dir_Cen_pid.Output_Max = 1000;
 	locate_box_data.Dir_Cen_pid.Output_Min = -1000;
 	locate_box_data.Dir_Cen_pid.Value_I_Max = 500;

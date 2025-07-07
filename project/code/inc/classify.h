@@ -1,3 +1,11 @@
+/*
+ * @Author: wxq 13498874+wtbz0915@user.noreply.gitee.com
+ * @Date: 2025-07-03 14:22:35
+ * @LastEditors: wxq 13498874+wtbz0915@user.noreply.gitee.com
+ * @LastEditTime: 2025-07-03 15:20:22
+ * @FilePath: \project\code\inc\classify.h
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 #ifndef __CLASSIFY_H__
 #define __CLASSIFY_H__
 
@@ -6,6 +14,9 @@
 
 #define PUSH_LEFT   0
 #define PUSH_RIGHT  1
+#define JIAN_GE  5
+
+
 //三大类物品分类
 typedef enum{
     Class_Utilities = 3,
@@ -48,5 +59,5 @@ typedef struct{
 void Class_Init();
 void Class_Debug();
 uint8_t Class_Add(uint8_t Class);
-
+void result_diaplay(uint8_t Class_Number);
 #endif 

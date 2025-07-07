@@ -1083,8 +1083,12 @@ void Vision_CirculeEnd_Handle(){
  * @brief 常规圆环思路
  * 
  */
+uint8_t cir_speed_flag = 0;
 void Vision_Cir_PI_Handle(){
     static float init_angle;
+
+    cir_speed_flag = (Circule_Handle.state == Circule_State3||Circule_Handle.state == Circule_out)?1:0;
+
     switch (Circule_Handle.state)
     {
         case Circule_State1:
@@ -1144,8 +1148,8 @@ void Vision_Cir_PI_Handle(){
                 // Car_Rotate( (Circule_Handle.Circule_LorR == LEFT_CIRCULE)?90:-90);
                 // rt_thread_delay(500);
 
-                Circule_Handle.anti_cir_broder[0] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 10:187;
-                Circule_Handle.anti_cir_broder[69] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 187:30;
+                Circule_Handle.anti_cir_broder[0] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 0:186;
+                Circule_Handle.anti_cir_broder[69] = (Circule_Handle.Circule_LorR == LEFT_CIRCULE)? 180:20;
 
                 Vision_set_AdditionalLine(0,69,Circule_Handle.anti_cir_broder);       
                 Vision_SetLose(Circule_Handle.circule_broder,0,69);
@@ -1251,16 +1255,26 @@ void Vision_CirculeHandle()
  * @brief 斑马线处理函数
  * 
  */
+extern uint8_t Class_Number; //分类个数
 void Vision_ZebraHandle(){
-    if(Start_Flag){
+    static int tick = 0;
+    if(Start_Flag && rt_tick_get() - tick > 5000){
             Car_Change_Speed(0,0,0);
             rt_thread_delay(10);
-            Car_DistanceMotion(0,50,1.5);
+            Car_DistanceMotion(0,50,0.5);
             rt_kprintf("Task Finished\n");
+            ips200_clear();
             while(1){
+                result_diaplay(Class_Number);
                 rt_thread_delay(10);
             }
     }
+    else if(Start_Flag == 0){
+        BUZZER_SPEAK;
+        Start_Flag = 1;
+        tick = rt_tick_get();
+    }
+    
     Current_Road = NormalRoads;
 
 }

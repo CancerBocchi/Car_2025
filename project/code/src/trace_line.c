@@ -9,8 +9,8 @@
 #include "trace_line.h"
 #include "camera.h"
 
-#define BASIC_SPEED 290
-#define Cir_SPEED 	290
+#define BASIC_SPEED 300
+#define Cir_SPEED 	100
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @data 数据部分
@@ -55,6 +55,8 @@ uint16_t speed_decision_mark(){
  * @brief 巡线策略函数
  * 
  */
+extern uint8_t cir_speed_flag;
+float quan;
 void trace_line_method()
 {
 	uint8_t row_begin = 20;
@@ -66,21 +68,25 @@ void trace_line_method()
 		uint16_t valid_line = 0;
 		for(int i = imgRow-1; i>=row_begin;i--){
 			if(Image_S.leftBroder[i] != LEFT_LOSE_VALUE || Image_S.rightBroder[i] != RIGHT_LOSE_VALUE){
-				TraceLine_Aver_Offset += (imgCol/2 - Image_S.MID_Table[i])*(i+1)*(i+1)/imgRow/imgRow;
+				quan = (1-((float)(i+1)/(float)imgRow-1)*((float)(i+1)/(float)imgRow-1));
+				TraceLine_Aver_Offset += (imgCol/2 - Image_S.MID_Table[i])*quan;
+				//TraceLine_Aver_Offset += (imgCol/2 - Image_S.MID_Table[i])*(i+1)/imgRow*(i+1)/imgRow;
 				valid_line+=1;
 			}
 		}
-
-		if(valid_line != 0)
+		if(valid_line != 0){
 			TraceLine_Aver_Offset /= valid_line;
+			// TraceLine_Aver_Offset -= valid_line*0.2;
+		}
 		else
 			TraceLine_Aver_Offset = 0;
+
 
 		//策略1 无中间环
 		float yaw_now = Pos_PID_Controller(&TraceLine_Normal_Con,TraceLine_Aver_Offset);
 		float vx = Pos_PID_Controller(&TraceLine_Vx_Con,TraceLine_Aver_Offset);
 
-		float speed_now = (Current_Road == CirculeRoads)?Cir_SPEED:BASIC_SPEED;
+		float speed_now = (Current_Road == CirculeRoads && cir_speed_flag)?Cir_SPEED:BASIC_SPEED;
 
 		speed_now = speed_now<0? 0:speed_now;
 		Car_Change_Speed(vx,speed_now,yaw_now);
@@ -118,16 +124,16 @@ void trace_line_init()
 	TraceLine_Yaw_Con.Output_Min = -150;
 	TraceLine_Yaw_Con.Value_I = 200;
 	TraceLine_Yaw_Con.Ref = 0;
-	
-	Pos_PID_Init(&TraceLine_Vx_Con,5,0,0);
-	TraceLine_Vx_Con.Output_Max = 300;
-	TraceLine_Vx_Con.Output_Min = -300;
+	// 250 5
+	Pos_PID_Init(&TraceLine_Vx_Con,2,0,3);
+	TraceLine_Vx_Con.Output_Max = 150;
+	TraceLine_Vx_Con.Output_Min = -150;
 	TraceLine_Vx_Con.Value_I = 200;
 	TraceLine_Vx_Con.Ref = 0;
-
-	Pos_PID_Init(&TraceLine_Normal_Con,-7.2,0,-10);
+	//250 7.2 10
+	Pos_PID_Init(&TraceLine_Normal_Con,-3.5,0,-3);
 	TraceLine_Normal_Con.Output_Max = 250;
-	TraceLine_Normal_Con.Output_Min = -350;
+	TraceLine_Normal_Con.Output_Min = -250;
 	TraceLine_Normal_Con.Value_I = 200;
 	TraceLine_Normal_Con.Ref = 0;
 
@@ -176,7 +182,7 @@ void trace_line_entry()
 		if(MCX_Detection_Flag){
 			rt_kprintf("trace_line:get into push box task\n");
 			Car_Change_Speed(0,0,0);
-			rt_thread_delay(500);
+			rt_thread_delay(100);
 			rt_sem_release(locate_box_sem);
 			rt_sem_take(trace_line_sem,RT_WAITING_FOREVER);
 

@@ -5,7 +5,7 @@ rt_thread_t led_thread;
 int Start_Flag = 0;
 
 int exposure_time = 256;
-
+extern uint8_t Class_Number; //分类个数
 
 void led_thread_entry()
 {
@@ -63,7 +63,6 @@ int main()
 			// Class_Add(Art_GetData());
 			// Art_DataClear();
 		}
-
 		// if(speed_forward){
 		// 	Car_Rotate(90);
 		// 	rt_thread_delay(1000);
