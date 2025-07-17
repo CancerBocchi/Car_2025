@@ -41,7 +41,7 @@ float Point_CalSlope(point_t p1,point_t p2)
  * @param x2 	横坐标 2
  * @return uint8_t 
  */
- int Math_StraightJudgeValue = 10; //阈值
+ int Math_StraightJudgeValue = 5; //阈值
 uint8_t Line_IsStraight(int16* broder,int16 x1,int16 x2)
 {
 	//斜率

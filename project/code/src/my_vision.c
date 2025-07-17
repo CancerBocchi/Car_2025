@@ -483,19 +483,20 @@ void Vision_BroderFindFP(int16* broder)
  */
 #define Zebra_Y 60
 #define Zebra_TH 10
-#define Zebra_Range 10
+#define Zebra_Range 8
 uint8_t Vision_IsZebra(){
     int change_num = 0;
-    int mid = (Image_S.leftBroder[30]+Image_S.rightBroder[30])/2;
+    //int mid = (Image_S.leftBroder[30]+Image_S.rightBroder[30])/2;
+    int mid = imgCol/2;
 
-    for(int i = mid;i<140;i++){
+    for(int i = mid;i<188-30;i++){
         if(my_image[Zebra_Y][i] > Threshold+Zebra_Range && my_image[Zebra_Y][i+1] < Threshold-Zebra_Range||
             my_image[Zebra_Y][i] < Threshold-Zebra_Range && my_image[Zebra_Y][i+1] > Threshold+Zebra_Range){
             change_num++;
         }
     }
 
-    for(int i = mid;i>46;i--){
+    for(int i = mid;i>30;i--){
         if(my_image[Zebra_Y][i] > Threshold+Zebra_Range && my_image[Zebra_Y][i+1] < Threshold-Zebra_Range||
             my_image[Zebra_Y][i] < Threshold-Zebra_Range && my_image[Zebra_Y][i+1] > Threshold+Zebra_Range){
             change_num++;
@@ -929,6 +930,8 @@ void Vision_CirculeState1_Handle(){
             Circule_Handle.tick = 0;
         }
     }
+    else
+        Circule_Handle.tick = 0;
 }
 
 /**
@@ -1117,8 +1120,10 @@ void Vision_Cir_PI_Handle(){
             Vision_SetLose(Circule_Handle.circule_broder,0,imgRow-1);
             // rt_kprintf("yaw:%.2f\n",fabs(init_angle - Att_CurrentYaw));
 
-            if(fabs(Att_CurrentYaw - init_angle) > 50.0f){
+            if(fabs(Att_CurrentYaw - init_angle) > 65.0f){
                 Car_Speed_ConRight = Con_By_TraceLine;
+                init_angle = Att_CurrentYaw;
+                rt_kprintf("RS:Cir init, init yaw:%.2f\n",init_angle);
                 Circule_Handle.state = Circule_Cor;
             }
 
@@ -1126,18 +1131,25 @@ void Vision_Cir_PI_Handle(){
 
         case Circule_Cor:
             //Vision_CirculeCor_Handle();
-            if(IsLose(Circule_Handle.circule_seg[0]) && IsLose(Circule_Handle.anti_cir_seg[0])){
-                Circule_Handle.tick++;
-                if(Circule_Handle.tick >= 1){
-                    init_angle = Att_CurrentYaw;
-                    Circule_Handle.state = Circule_out;
-                    rt_kprintf("RS:Cir Out, init yaw:%.2f\n",init_angle);
-
-                    Circule_Handle.tick = 0;
-                }
+            rt_kprintf("yaw:%.2f\n",Att_CurrentYaw);
+            if(fabs(Att_CurrentYaw - init_angle) > 170){
+                init_angle = Att_CurrentYaw;
+                Circule_Handle.state = Circule_out;
+                rt_kprintf("RS:Cir Out, init yaw:%.2f\n",init_angle);
             }
-            else 
-                Circule_Handle.tick = 0;
+
+            // if(IsLose(Circule_Handle.circule_seg[0]) && IsLose(Circule_Handle.anti_cir_seg[0])){
+            //     Circule_Handle.tick++;
+            //     if(Circule_Handle.tick >= 1){
+            //         init_angle = Att_CurrentYaw;
+            //         Circule_Handle.state = Circule_out;
+            //         rt_kprintf("RS:Cir Out, init yaw:%.2f\n",init_angle);
+
+            //         Circule_Handle.tick = 0;
+            //     }
+            // }
+            // else 
+            //     Circule_Handle.tick = 0;
         break;
 
         case Circule_out:
@@ -1238,7 +1250,8 @@ void Vision_CirculeHandle()
     if(Circule_Handle.state == Circule_State1||Circule_Handle.state == Circule_State2){
 
         static int out_n;
-        out_n = (!IsStrai(Circule_Handle.anti_cir_seg[0])&&(Vision_GetSegLenghth(Circule_Handle.anti_cir_seg[0]) >= 20))? out_n+1:0;
+        out_n = (!(IsStrai(Circule_Handle.anti_cir_seg[0])&&(Vision_GetSegLenghth(Circule_Handle.anti_cir_seg[0]) >= 20)
+                ||(IsStrai(Circule_Handle.anti_cir_seg[0]))))? out_n+1:0;
         if(out_n == 3){
             Current_Road = NormalRoads;
             Circule_Handle.state = Circule_Begin;
@@ -1256,6 +1269,7 @@ void Vision_CirculeHandle()
  * 
  */
 extern uint8_t Class_Number; //分类个数
+extern uint32_t run_time;
 void Vision_ZebraHandle(){
     static int tick = 0;
     if(Start_Flag && rt_tick_get() - tick > 5000){
@@ -1263,9 +1277,11 @@ void Vision_ZebraHandle(){
             rt_thread_delay(10);
             Car_DistanceMotion(0,50,0.5);
             rt_kprintf("Task Finished\n");
+            run_time = rt_tick_get() - run_time;
             ips200_clear();
             while(1){
                 result_diaplay(Class_Number);
+                ips200_show_float(240,210,(double)((float)run_time/1000.0f),4,3);
                 rt_thread_delay(10);
             }
     }

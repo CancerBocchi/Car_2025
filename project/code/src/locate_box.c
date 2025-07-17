@@ -1,6 +1,7 @@
 #include "locate_box.h"
+#include "math.h"
 
-#define AREA_CON_REF	160//160//高度控制期望
+#define AREA_CON_REF	120//160//高度控制期望
 // #define X_CON_REF	
 #define X_CON_REF		160
 
@@ -32,7 +33,7 @@ void sorronding_test(){
 			//Car_Change_Speed(0,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 
 			//Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),0,0);
-			Car_Change_Speed(350,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
+			Car_Change_Speed(250,Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
 			rt_kprintf("%d,%d\n",center_x,center_y);
 			MCX_rx_flag = 0;
 		}
@@ -128,6 +129,8 @@ void test_midK_Cor(){
 		if(mt9v03x_finish_flag){
 			Camera_PreProcess();
 			Camera_FindMyLine();
+			Vision_GetSegment(Image_S.leftBroder,1);
+			Vision_GetSegment(Image_S.rightBroder,0);
 			
 			//获取中线
 			for(int i=imgRow-1;i>=0;i--)
@@ -135,13 +138,33 @@ void test_midK_Cor(){
 
 			Vision_Draw();
 
-			//截取部分中线的斜率平均值
-			float aver_error;
-			aver_error  = Line_GetAverK(Image_S.MID_Table,69,69-10)*20;
-			//控制平均斜率为0
-			Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Dir_pid,aver_error),0,
-							 Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,center_x));
-			// Car_Change_Speed(0,0,Pos_PID_Controller(&locate_box_data.Dir_Cen_pid,aver_error));
+			int n = 0;
+			float k_Left = 0;
+			float k_Right = 0;
+			float k_Midd = 0;
+
+			for(int i = F.segment_n_L;i>0;i--){
+				if(!IsLose(F.my_segment_L[i-1])){
+					k_Left += Line_GetAverK(Image_S.leftBroder,F.my_segment_L[i-1].begin,F.my_segment_L[i-1].end);	
+					n++;
+				}
+			}
+			k_Left = (n == 0)?0:k_Left/n;
+			n = 0;
+
+			for(int i = F.segment_n_R;i>0;i--){
+				if(!IsLose(F.my_segment_R[i-1])){
+					k_Right += Line_GetAverK(Image_S.rightBroder,F.my_segment_R[i-1].begin,F.my_segment_R[i-1].end);	
+					n++;
+				}
+			}
+			k_Right = (n==0)?0:k_Right/n;
+
+			n = (k_Left == 0 || k_Right == 0)?1:2;
+
+			float theta_offset = atan((k_Right+k_Left)/n)*180/PI;
+			
+			rt_kprintf("Locate_theta:%.2f\n",theta_offset+90);
 
 			mt9v03x_finish_flag = 0;
 		}
@@ -210,7 +233,10 @@ void direction_correction_test1(){
 			ips200_show_gray_image(0, 100, (const uint8 *)push_img_bw, 188, 120, 188, 120, 0);
 
 			ShouldPush = PushBox_IsDirectionCorrect();
-			//rt_kprintf("%d\n",ShouldPush);
+			rt_kprintf("%d\n",ShouldPush);
+			
+
+			mt9v03x_finish_flag = 0;
 		}
 
 
@@ -227,10 +253,26 @@ void direction_correction_test1(){
 					rt_kprintf("push box: init yaw is %.2f\n",init_angle);
 					angle_state = Location_Correct_State;
 					Art_DataClear();
-					//启动分类
-					rt_thread_delay(500);
+					uint8_t tick = 0;
+					int class; 
 					//等待分类
-					while(Art_GetData() == 0);//115为空
+					while(Art_GetData());
+					class = Art_GetData();
+					Art_DataClear();
+					while(tick < 3){
+
+						if(Art_GetData()){
+							if(class == Art_GetData()){
+								tick++;
+							}
+							else{
+								class = Art_GetData();
+								tick = 0;
+							}
+							if(tick < 3)
+								Art_DataClear();
+						}
+					}
 					l_or_r = Class_Add(Art_GetData());
 					Art_DataClear();
 
@@ -252,7 +294,7 @@ void direction_correction_test1(){
 
 			case Push_Box_State:
 				Car_Change_Speed(Pos_PID_Controller(&locate_box_data.Transverse_pid,center_x),Pos_PID_Controller(&locate_box_data.Longitudinal_pid,center_y),0);
-				if(abs(center_x - X_CON_REF)<=3){
+				if(abs(center_x - X_CON_REF)<=10){
 					push_box(l_or_r);
 					MCX_Change_Mode(MCX_Reset_Mode);
 					Car_Speed_ConRight = Con_By_TraceLine;
@@ -347,7 +389,7 @@ void locate_box_init()
 	locate_box_data.Transverse_pid.Ref = X_CON_REF;
 
 	//一次矫正PID初始化 -1.4,0,-0.7
-	Pos_PID_Init(&locate_box_data.Dir_Cen_pid,-1.5,0,-0.5);
+	Pos_PID_Init(&locate_box_data.Dir_Cen_pid,-1.0,0,0);
 	locate_box_data.Dir_Cen_pid.Output_Max = 1000;
 	locate_box_data.Dir_Cen_pid.Output_Min = -1000;
 	locate_box_data.Dir_Cen_pid.Value_I_Max = 500;

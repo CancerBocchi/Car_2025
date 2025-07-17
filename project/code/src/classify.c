@@ -237,7 +237,7 @@ void result_diaplay(uint8_t Class_Number)
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16,Wrench,2,RGB565_RED);
                 break;
                 case Class_Screwdriver:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,screwdriver,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,screwdriver,3,RGB565_RED);
                 break;
                 case Class_Tape:
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16,Tape_measure,2,RGB565_RED);
@@ -246,22 +246,22 @@ void result_diaplay(uint8_t Class_Number)
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16,Pliers,2,RGB565_RED);
                 break;
                 case Class_Solder:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,soldering_iron,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,soldering_iron,3,RGB565_RED);
                 break;
                 case Class_Drill:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Electric_drill,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Electric_drill,3,RGB565_RED);
                 break;
                 case Class_Phone:   
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16,Mobile_phone,2,RGB565_RED);
                 break;
                 case Class_Multimeter:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,multimeter,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,multimeter,3,RGB565_RED);
                 break;
                 case Class_Sound:
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16 ,sound_system,2,RGB565_RED);
                 break;
                 case Class_Headphone:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Headphones,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Headphones,5,RGB565_RED);
                 break;
                 case Class_Keyboard:
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16,Keyboard,2,RGB565_RED);
@@ -270,13 +270,13 @@ void result_diaplay(uint8_t Class_Number)
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16,mouse,2,RGB565_RED);
                 break;
                 case Class_Monitor:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Monitor,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Monitor,3,RGB565_RED);
                 break;
                 case Class_Oscilloscope:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,oscilloscope,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,oscilloscope,3,RGB565_RED);
                 break;
                 case Class_Printer:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Printer,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Printer,3,RGB565_RED);
                 break;
                 default:
                     ips200_show_int(16*JIAN_GE,32+16*i,Class_Info[i].Class_Small,2);
@@ -296,7 +296,7 @@ void result_diaplay(uint8_t Class_Number)
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16,Wrench,2,RGB565_RED);
                 break;
                 case Class_Screwdriver:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,screwdriver,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,screwdriver,3,RGB565_RED);
                 break;
                 case Class_Tape:
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16,Tape_measure,2,RGB565_RED);
@@ -305,22 +305,22 @@ void result_diaplay(uint8_t Class_Number)
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16,Pliers,2,RGB565_RED);
                 break;
                 case Class_Solder:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,soldering_iron,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,soldering_iron,3,RGB565_RED);
                 break;
                 case Class_Drill:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Electric_drill,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Electric_drill,3,RGB565_RED);
                 break;
                 case Class_Phone:   
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16,Mobile_phone,2,RGB565_RED);
                 break;
                 case Class_Multimeter:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,multimeter,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,multimeter,3,RGB565_RED);
                 break;
                 case Class_Sound:
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16 ,sound_system,2,RGB565_RED);
                 break;
                 case Class_Headphone:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Headphones,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Headphones,5,RGB565_RED);
                 break;
                 case Class_Keyboard:
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16,Keyboard,2,RGB565_RED);
@@ -329,13 +329,13 @@ void result_diaplay(uint8_t Class_Number)
                     ips200_show_chinese(16*JIAN_GE,32+16*i,16,mouse,2,RGB565_RED);
                 break;
                 case Class_Monitor:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Monitor,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Monitor,3,RGB565_RED);
                 break;
                 case Class_Oscilloscope:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,oscilloscope,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,oscilloscope,3,RGB565_RED);
                 break;
                 case Class_Printer:
-                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Printer,2,RGB565_RED);
+                    ips200_show_chinese(16*JIAN_GE,32+16*i,16,Printer,3,RGB565_RED);
                 break;
                 default:
                     ips200_show_int(16*JIAN_GE,32+16*i,Class_Info[i].Class_Small,2);
@@ -344,13 +344,13 @@ void result_diaplay(uint8_t Class_Number)
         }
         for(int i = 13;i<Class_Number;i++)
         {
-            ips200_show_int(16*10,32+16*(i-13),i+1,2);
+            ips200_show_int(16*11,32+16*(i-13),i+1,2);
             switch(Class_Info[i].Class_Small){
                 case Class_Wrench:
                     ips200_show_chinese(16*15,32+16*(i-13),16,Wrench,2,RGB565_RED);
                 break;
                 case Class_Screwdriver:
-                    ips200_show_chinese(16*15,32+16*(i-13),16,screwdriver,2,RGB565_RED);
+                    ips200_show_chinese(16*15,32+16*(i-13),16,screwdriver,3,RGB565_RED);
                 break;
                 case Class_Tape:
                     ips200_show_chinese(16*15,32+16*(i-13),16,Tape_measure,2,RGB565_RED);
@@ -359,22 +359,22 @@ void result_diaplay(uint8_t Class_Number)
                     ips200_show_chinese(16*15,32+16*(i-13),16,Pliers,2,RGB565_RED);
                 break;
                 case Class_Solder:
-                    ips200_show_chinese(16*15,32+16*(i-13),16,soldering_iron,2,RGB565_RED);
+                    ips200_show_chinese(16*15,32+16*(i-13),16,soldering_iron,3,RGB565_RED);
                 break;
                 case Class_Drill:
-                    ips200_show_chinese(16*15,32+16*(i-13),16,Electric_drill,2,RGB565_RED);
+                    ips200_show_chinese(16*15,32+16*(i-13),16,Electric_drill,3,RGB565_RED);
                 break;
                 case Class_Phone:   
                     ips200_show_chinese(16*15,32+16*(i-13),16,Mobile_phone,2,RGB565_RED);
                 break;
                 case Class_Multimeter:
-                    ips200_show_chinese(16*15,32+16*(i-13),16,multimeter,2,RGB565_RED);
+                    ips200_show_chinese(16*15,32+16*(i-13),16,multimeter,3,RGB565_RED);
                 break;
                 case Class_Sound:
                     ips200_show_chinese(16*15,32+16*(i-13),16 ,sound_system,2,RGB565_RED);
                 break;
                 case Class_Headphone:
-                    ips200_show_chinese(16*15,32+16*(i-13),16,Headphones,2,RGB565_RED);
+                    ips200_show_chinese(16*15,32+16*(i-13),16,Headphones,5,RGB565_RED);
                 break;
                 case Class_Keyboard:
                     ips200_show_chinese(16*15,32+16*(i-13),16,Keyboard,2,RGB565_RED);
@@ -383,13 +383,13 @@ void result_diaplay(uint8_t Class_Number)
                     ips200_show_chinese(16*15,32+16*(i-13),16,mouse,2,RGB565_RED);
                 break;
                 case Class_Monitor:
-                    ips200_show_chinese(16*15,32+16*(i-13),16,Monitor,2,RGB565_RED);
+                    ips200_show_chinese(16*15,32+16*(i-13),16,Monitor,3,RGB565_RED);
                 break;
                 case Class_Oscilloscope:
-                    ips200_show_chinese(16*15,32+16*(i-13),16,oscilloscope,2,RGB565_RED);
+                    ips200_show_chinese(16*15,32+16*(i-13),16,oscilloscope,3,RGB565_RED);
                 break;
                 case Class_Printer:
-                    ips200_show_chinese(16*15,32+16*(i-13),16,Printer,2,RGB565_RED);
+                    ips200_show_chinese(16*15,32+16*(i-13),16,Printer,3,RGB565_RED);
                 break;
                 default:
                     ips200_show_int(16*15,32+16*(i-13),Class_Info[i].Class_Small,2);

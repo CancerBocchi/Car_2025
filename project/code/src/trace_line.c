@@ -9,7 +9,7 @@
 #include "trace_line.h"
 #include "camera.h"
 
-#define BASIC_SPEED 300
+#define BASIC_SPEED 400
 #define Cir_SPEED 	100
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ float quan;
 void trace_line_method()
 {
 	uint8_t row_begin = 20;
-	float mid_offset=1.65;
+	float mid_offset = 1.65;
 	//速度控制权判定
 	if(Car_Speed_ConRight == Con_By_TraceLine){
 		//策略1 常规巡线
@@ -83,7 +83,7 @@ void trace_line_method()
 
 
 		//策略1 无中间环
-		float yaw_now = Pos_PID_Controller(&TraceLine_Normal_Con,TraceLine_Aver_Offset);
+		float yaw_now = Pos_PID_Controller(&TraceLine_Normal_Con,TraceLine_Aver_Offset - icm20602_gyro_z/100);
 		float vx = Pos_PID_Controller(&TraceLine_Vx_Con,TraceLine_Aver_Offset);
 
 		float speed_now = (Current_Road == CirculeRoads && cir_speed_flag)?Cir_SPEED:BASIC_SPEED;
@@ -125,15 +125,15 @@ void trace_line_init()
 	TraceLine_Yaw_Con.Value_I = 200;
 	TraceLine_Yaw_Con.Ref = 0;
 	// 250 5
-	Pos_PID_Init(&TraceLine_Vx_Con,2,0,3);
-	TraceLine_Vx_Con.Output_Max = 150;
-	TraceLine_Vx_Con.Output_Min = -150;
+	Pos_PID_Init(&TraceLine_Vx_Con,5.5,0,1);
+	TraceLine_Vx_Con.Output_Max = 200;
+	TraceLine_Vx_Con.Output_Min = -200;
 	TraceLine_Vx_Con.Value_I = 200;
 	TraceLine_Vx_Con.Ref = 0;
 	//250 7.2 10
-	Pos_PID_Init(&TraceLine_Normal_Con,-3.5,0,-3);
-	TraceLine_Normal_Con.Output_Max = 250;
-	TraceLine_Normal_Con.Output_Min = -250;
+	Pos_PID_Init(&TraceLine_Normal_Con,-8.0,0,-2);
+	TraceLine_Normal_Con.Output_Max = 300;
+	TraceLine_Normal_Con.Output_Min = -300;
 	TraceLine_Normal_Con.Value_I = 200;
 	TraceLine_Normal_Con.Ref = 0;
 

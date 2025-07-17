@@ -4,6 +4,8 @@ rt_thread_t led_thread;
 
 int Start_Flag = 0;
 
+uint32_t run_time;
+
 int exposure_time = 256;
 extern uint8_t Class_Number; //分类个数
 
@@ -41,8 +43,7 @@ int main()
 	rt_kprintf("---------- task init ----------\n");
 	locate_box_init();
 	trace_line_init();
-
-
+	
 	rt_kprintf("--------- init end ----------\n");
 
 	gpio_init(D16,GPI,0,GPI_PULL_UP);
@@ -57,17 +58,13 @@ int main()
 			Car_Start();
 			rt_thread_delay(2000);
 			speed_forward = 300;
-			// Car_Speed_ConRight = Con_By_AngleLoop;
-			// rt_thread_delay(600);
-			// while(Art_GetData() == 0);
-			// Class_Add(Art_GetData());
-			// Art_DataClear();
+			run_time = rt_tick_get();
 		}
 		// if(speed_forward){
 		// 	Car_Rotate(90);
 		// 	rt_thread_delay(1000);
 		// }
-
+		
 
 		rt_thread_delay(1);
 	}
